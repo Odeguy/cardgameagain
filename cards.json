@@ -5,7 +5,23 @@
 			"effect": "None"
 		},
 		{
+			"name": "Pyrrhic Victory",
+			"effect": "None"
+		},
+		{
+			"name": "Monument to Pain",
+			"effect": "None"
+		},
+		{
 			"name": "Onyx Blade",
+			"effect": "None"
+		},
+		{
+			"name": "Restoring Flame",
+			"effect": "None"
+		},
+		{
+			"name": "Reckless Gamble",
 			"effect": "None"
 		}
 	]
