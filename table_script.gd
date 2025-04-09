@@ -22,3 +22,6 @@ func draw_card():
 		deck[deck.keys()[0]].position = screen_size / Vector2(2, 2)
 		deck.erase(deck.keys()[0])
 		
+func switch_side():
+	pass
+		
