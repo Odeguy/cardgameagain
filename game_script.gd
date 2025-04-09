@@ -13,7 +13,9 @@ func _ready():
 	
 func create_card(num):
 	var new_card = card_scene.instantiate()
-	new_card.card_name = cards["cards"][num]["name"]
-	new_card.effect = cards["cards"][num]["effect"]
+	new_card.set_card_name(cards["cards"][num]["name"])
+	new_card.set_effect(cards["cards"][num]["effect"])
+	new_card.set_color(Color(0, 0, 0))
+	new_card.set_font_size(5)
 	return new_card
 	

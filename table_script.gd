@@ -4,10 +4,12 @@ extends Node2D
 var hand = {}
 var full_deck = {}
 var deck = full_deck
+var screen_size
 func _ready():
-	$Area/Shape.shape.size = Vector2(get_viewport_rect().size.x, get_viewport_rect().size.y * 2 / 3)
-	$Area.position.x = get_viewport_rect().size.x / 2
-	$Area.position.y = get_viewport_rect().size.y / 3 + ($Area/Shape.shape.size.y * 0.5)
+	screen_size = get_viewport_rect().size
+	$Area/Shape.shape.size = Vector2(screen_size.x, screen_size.y * 2 / 3)
+	$Area.position.x = screen_size.x / 2
+	$Area.position.y = screen_size.y / 3 + ($Area/Shape.shape.size.y * 0.5)
 	
 func add_to_deck(card):
 	full_deck[card.card_name] = card
@@ -17,5 +19,6 @@ func add_to_deck(card):
 func draw_card():
 	if(deck.size() > 0):
 		deck[deck.keys()[0]].show()
+		deck[deck.keys()[0]].position = screen_size / Vector2(2, 2)
 		deck.erase(deck.keys()[0])
 		
