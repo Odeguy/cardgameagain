@@ -17,9 +17,10 @@ func _ready():
 	opponent.add_to_deck(create_card(0))
 	add_child(player)
 	add_child(opponent)
-	player.draw_card()
-	opponent.draw_card()
-	play()
+	for i in range(5):
+		player.draw_card()
+		opponent.draw_card()
+	#play()
 	
 func create_card(num):
 	var new_card = card_scene.instantiate()

@@ -18,10 +18,18 @@ func add_to_deck(card):
 
 func draw_card():
 	if(deck.size() > 0):
-		deck[deck.keys()[0]].show()
+		hand[deck.keys()[0]] = deck[deck.keys()[0]]
 		deck[deck.keys()[0]].position = screen_size / Vector2(2, 2)
 		deck.erase(deck.keys()[0])
+		show_hand()
 		
+func show_hand():
+	var start = screen_size / 5
+	var increment = screen_size * 4 / 5 / hand.size()
+	for card in hand:
+		card.position = start + increment + card.get_size() / 2
+		card.show()
+	
 func switch_side():
 	pass
 		

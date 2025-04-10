@@ -56,3 +56,6 @@ func re_push():
 	if(font_size != null): $Body/Front/EffectLabel.push_font_size(font_size)
 	if(font != null): $Body/Front/EffectLabel.push_font(font)
 	if(effect != null): $Body/Front/EffectLabel.append_text(effect)
+	
+func get_size() -> Vector2:
+	return $Body/Shape.get_shape().size
