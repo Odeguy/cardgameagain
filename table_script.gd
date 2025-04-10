@@ -5,9 +5,13 @@ var hand = {}
 var full_deck = {}
 var deck = full_deck
 var screen_size
+var area_size
+var side_switched = false
 func _ready():
+	side_switched = false
 	screen_size = get_viewport_rect().size
 	$Area/Shape.shape.size = Vector2(screen_size.x, screen_size.y * 2 / 3)
+	area_size = $Area/Shape.shape.size
 	$Area.position.x = screen_size.x / 2
 	$Area.position.y = screen_size.y / 3 + ($Area/Shape.shape.size.y * 0.5)
 	
@@ -21,15 +25,25 @@ func draw_card():
 		hand[deck.keys()[0]] = deck[deck.keys()[0]]
 		deck[deck.keys()[0]].position = screen_size / Vector2(2, 2)
 		deck.erase(deck.keys()[0])
-		show_hand()
 		
 func show_hand():
-	var start = screen_size / 5
-	var increment = screen_size * 4 / 5 / hand.size()
+	var start = area_size.x / 5
+	var increment = area_size.x * 4 / 5 / (hand.size() + 1)
+	var increments = 1
 	for card in hand:
-		card.position = start + increment + card.get_size() / 2
-		card.show()
+		if(!side_switched):
+			hand[card].position.x = start + increment * increments + hand[card].get_size().x / 2
+			hand[card].position.y = area_size.y * 8 / 7
+		else:
+			hand[card].position.x = screen_size.x - (start + increment * increments + hand[card].get_size().x / 2)
+			hand[card].position.y = screen_size.y - area_size.y * 8 / 7
+			print(hand[card].position)
+		hand[card].rotation = $Area.rotation
+		increments += 1
+		hand[card].show()
 	
 func switch_side():
-	pass
+	side_switched = true
+	$Area.rotate(3.14)
+	$Area.position = Vector2($Area.position.x, ($Area/Shape.shape.size.y * 0.5))
 		

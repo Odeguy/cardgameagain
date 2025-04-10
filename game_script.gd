@@ -11,15 +11,18 @@ var gameover
 func _ready():
 	gameover = false
 	player = table_scene.instantiate()
-	player.add_to_deck(create_card(1))
 	opponent = table_scene.instantiate()
-	opponent.switch_side()
-	opponent.add_to_deck(create_card(0))
 	add_child(player)
 	add_child(opponent)
 	for i in range(5):
+		player.add_to_deck(create_card(i))
+		opponent.add_to_deck(create_card(i))
+	opponent.switch_side()
+	for i in range(5):
 		player.draw_card()
 		opponent.draw_card()
+	player.show_hand()
+	opponent.show_hand()
 	#play()
 	
 func create_card(num):
