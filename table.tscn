@@ -16,3 +16,7 @@ position = Vector2(582, 440)
 [node name="Shape" type="CollisionShape2D" parent="Area"]
 position = Vector2(0.75, 9.5)
 shape = SubResource("RectangleShape2D_nxs2u")
+
+[node name="Points" type="RichTextLabel" parent="Area"]
+offset_right = 40.0
+offset_bottom = 40.0

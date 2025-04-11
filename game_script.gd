@@ -7,6 +7,7 @@ var player
 var opponent
 var turn = true #player's turn
 var gameover
+var chosen_card
 
 func _ready():
 	gameover = false
@@ -23,9 +24,9 @@ func _ready():
 		opponent.draw_card()
 	player.show_hand()
 	opponent.show_hand()
-	#play()
+	play()
 	
-func create_card(num):
+func create_card(num: int) -> Object:
 	var new_card = card_scene.instantiate()
 	new_card.set_card_name(cards["cards"][num]["name"])
 	new_card.set_effect(cards["cards"][num]["effect"])
@@ -35,8 +36,15 @@ func create_card(num):
 
 func play():
 	if turn:
-		pass
+		chosen_card = null
+		while chosen_card == null:
+			await get_tree().process_frame
 	else:
-		pass
+		gameover = true
 	if !gameover:
 		play()
+		
+func _input(event: InputEvent) -> void:
+	for card in player.hand:
+		if(event is InputEventMouseButton and event.pressed and player.hand[card].has_point(get_global_mouse_position())):
+			chosen_card = card
