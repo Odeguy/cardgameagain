@@ -39,6 +39,7 @@ func play():
 		chosen_card = null
 		while chosen_card == null:
 			await get_tree().process_frame
+		player.play_card(chosen_card)
 	else:
 		gameover = true
 	if !gameover:

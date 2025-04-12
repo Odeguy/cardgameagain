@@ -48,7 +48,9 @@ func show_hand():
 		hand[card].show()
 		
 func play_card(key: String) -> String:
+	remove_child(hand[key])
 	hand.erase(key)
+	show_hand()
 	return key
 	
 	
