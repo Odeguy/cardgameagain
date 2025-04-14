@@ -39,11 +39,16 @@ func play():
 		chosen_card = null
 		while chosen_card == null:
 			await get_tree().process_frame
-		player.play_card(chosen_card)
+		card_effect(player.play_card(chosen_card), player, opponent)
 	else:
 		gameover = true
 	if !gameover:
 		play()
+		
+func card_effect(effect, sender, reciever):
+	if effect == "None":
+		sender.points += 1
+	
 		
 func _input(event: InputEvent) -> void:
 	for card in player.hand:

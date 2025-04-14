@@ -10,11 +10,6 @@ var font_size
 func _ready():
 	$Body/Button.size = $Body/Shape.shape.size
 	$Body/Button.visible = false
-	color = await Color(0, 0, 0)
-	font_size = 12
-	card_name = ""
-	effect = ""
-	front = false
 	toggle_side()
 
 func toggle_side():
@@ -61,6 +56,21 @@ func re_push():
 	
 func get_size() -> Vector2:
 	return $Body/Shape.get_shape().size
+	
+func get_card_name() -> String:
+	return card_name
+
+func get_effect() -> String:
+	return effect
+
+func get_color() -> Color:
+	return color
+	
+func get_font() -> String:
+	return font
+	
+func get_font_size() -> int:
+	return font_size
 
 func has_point(point: Vector2) -> bool:
 	return $Body/Shape.shape.get_rect().has_point(to_local(point))
