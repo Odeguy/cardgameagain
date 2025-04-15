@@ -6,11 +6,13 @@ var front = false
 var color
 var font
 var font_size
+var text_break = 0.04
 
 func _ready():
 	$Body/Button.size = $Body/Shape.shape.size
 	$Body/Button.visible = false
 	toggle_side()
+	load_text(true)
 
 func toggle_side():
 	if(front):
@@ -46,13 +48,11 @@ func re_push():
 	if(color != null): $Body/Front/NameLabel.push_color(color)
 	if(font_size != null): $Body/Front/NameLabel.push_font_size(font_size)
 	if(font != null): $Body/Front/NameLabel.push_font(font)
-	if(card_name != null): $Body/Front/NameLabel.append_text(card_name)
 	
 	$Body/Front/EffectLabel.clear()
 	if(color != null): $Body/Front/EffectLabel.push_color(color)
 	if(font_size != null): $Body/Front/EffectLabel.push_font_size(font_size)
 	if(font != null): $Body/Front/EffectLabel.push_font(font)
-	if(effect != null): $Body/Front/EffectLabel.append_text(effect)
 	
 func get_size() -> Vector2:
 	return $Body/Shape.get_shape().size
@@ -74,3 +74,18 @@ func get_font_size() -> int:
 
 func has_point(point: Vector2) -> bool:
 	return $Body/Shape.shape.get_rect().has_point(to_local(point))
+	
+func load_text(gradually):
+	$Body/Front/NameLabel.clear()
+	$Body/Front/EffectLabel.clear()
+	re_push()
+	if gradually:
+		for char in card_name:
+			$Body/Front/NameLabel.append_text(char)
+			await get_tree().create_timer(text_break).timeout
+		for char in effect:
+			$Body/Front/EffectLabel.append_text(char)
+			await get_tree().create_timer(text_break).timeout
+	else:
+		$Body/Front/NameLabel.append_text(card_name)	
+		$Body/Front/EffectLabel.append_text(effect)

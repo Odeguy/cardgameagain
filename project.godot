@@ -11,6 +11,6 @@ config_version=5
 [application]
 
 config/name="Card Game"
-run/main_scene="uid://ck3irc8fvjtpf"
+run/main_scene="uid://df58dyooaptaq"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
