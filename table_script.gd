@@ -22,13 +22,9 @@ func _ready():
 	refresh_points()
 	
 func add_to_deck(card):
-	print(card.card_name)
 	full_deck[card.card_name] = card
-	print(full_deck[card.card_name].card_name)
 	card.hide()
-	print(full_deck[card.card_name].card_name)
 	add_child(card)
-	print(full_deck[card.card_name].card_name)
 
 func draw_card():
 	if(deck.size() > 0):

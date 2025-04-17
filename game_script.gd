@@ -55,7 +55,7 @@ func play():
 		await get_tree().create_timer(0.5).timeout
 		var random_card = opponent.hand.keys()[randi() % opponent.hand.size()]
 		card_effect(opponent.play_card(random_card), opponent, player)
-	if player.points == 5 or opponent.points == 5: gameover = true
+	if player.points == points_goal or opponent.points == points_goal: gameover = true
 	turn = !turn
 	if !gameover:
 		play()
@@ -69,5 +69,5 @@ func card_effect(effect, sender, reciever):
 		
 func _input(event: InputEvent) -> void:
 	for card in player.hand:
-		if(event is InputEventMouseButton and event.pressed and player.hand[card].has_point(get_global_mouse_position())):
+		if(event is InputEventMouseButton and event.pressed and player.hand[card].loaded and player.hand[card].has_point(get_global_mouse_position())):
 			chosen_card = card

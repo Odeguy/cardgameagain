@@ -7,8 +7,10 @@ var color
 var font
 var font_size
 var text_break = 0.04
+var loaded
 
 func _ready():
+	loaded = false
 	$Body/Button.size = $Body/Shape.shape.size
 	$Body/Button.visible = false
 	toggle_side()
@@ -80,6 +82,7 @@ func load_text(gradually):
 	$Body/Front/EffectLabel.clear()
 	re_push()
 	if gradually:
+		loaded = false
 		for char in card_name:
 			$Body/Front/NameLabel.append_text(char)
 			await get_tree().create_timer(text_break).timeout
@@ -89,3 +92,4 @@ func load_text(gradually):
 	else:
 		$Body/Front/NameLabel.append_text(card_name)	
 		$Body/Front/EffectLabel.append_text(effect)
+	loaded = true
