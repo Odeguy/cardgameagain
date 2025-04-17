@@ -2,27 +2,75 @@
 	"cards": [
 		{
 			"name": "Hollow Mask",
-			"effect": "None"
+			"effect": "Block your opponent from viewing your hand or deck until your next turn"
 		},
 		{
 			"name": "Pyrrhic Victory",
-			"effect": "None"
+			"effect": "Halve your opponents points and reduce your own points to zero"
 		},
 		{
 			"name": "Monument to Pain",
-			"effect": "None"
+			"effect": "Draw one card everytime your points are reduced during this turn"
 		},
 		{
 			"name": "Onyx Blade",
-			"effect": "None"
+			"effect": "This card's point value cannot be changed"
 		},
 		{
 			"name": "Restoring Flame",
-			"effect": "None"
+			"effect": "Restore your point value to it's peak from the start of your last turn to now"
 		},
 		{
 			"name": "Reckless Gamble",
+			"effect": "40% chance to double a cards point value. Upon failure, the card is destroyed instead"
+		},
+		{
+			"name": "Divination",
+			"effect": "Reveal your opponent's entire hand. No other action can be taken within the same turn, before or after this card is activated"
+		},
+		{
+			"name": "Vision Sharing",
+			"effect": "View one card in your opponent's hand"
+		},
+		{
+			"name": "Induction",
+			"effect": "Reveal the result of a chance occurence"
+		},
+		{
+			"name": "Deduction",
+			"effect": "Reveal the top card of your opponent's deck"
+		},
+		{
+			"name": "Cause and Effect",
 			"effect": "None"
+		},
+		{
+			"name": "Free Will",
+			"effect": "End a chain of card effects"
+		},
+		{
+			"name": "Calamity",
+			"effect": "The next 5 chance occurences have a halved probability"
+		},
+		{
+			"name": "Luck Streak",
+			"effect": "The next 5 chance occurences have a doubled probability"
+		},
+		{
+			"name": "Motivational Poster",
+			"effect": "Add this card's point value to another card's point value"
+		},
+		{
+			"name": "Rousing Speech",
+			"effect": "Unflip a flipped card"
+		},
+		{
+			"name": "Sharp Outfit",
+			"effect": "View the top 3 cards in your deck and add 1 to your deck"
+		},
+		{
+			"name": "Cognitive Dissonance",
+			"effect": "This card uses the most recently activated effect"
 		}
 	]
 }
