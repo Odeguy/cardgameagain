@@ -37,16 +37,17 @@ texture = SubResource("GradientTexture2D_rjlel")
 [node name="NameLabel" type="RichTextLabel" parent="Body/Front"]
 offset_left = -30.0
 offset_top = -31.0
-offset_right = 29.0
-offset_bottom = -21.0
-fit_content = true
+offset_right = 568.0
+offset_bottom = 49.0
+scale = Vector2(0.1, 0.1)
 scroll_active = false
 
 [node name="EffectLabel" type="RichTextLabel" parent="Body/Front"]
 offset_left = -30.0
 offset_top = 2.0
-offset_right = 29.0
-offset_bottom = 27.0
+offset_right = 574.0
+offset_bottom = 278.0
+scale = Vector2(0.1, 0.1)
 scroll_active = false
 
 [node name="Button" type="Button" parent="Body"]
