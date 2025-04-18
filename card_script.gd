@@ -8,6 +8,7 @@ var font
 var font_size
 var text_break = 0.04
 var loaded
+var points
 
 func _ready():
 	loaded = false
@@ -31,6 +32,10 @@ func set_color(color_entered: Color):
 
 func set_font_size(size_entered: int):
 	font_size = size_entered
+	re_push()
+	
+func set_points(points_entered: int):
+	points = points_entered
 	re_push()
 	
 func set_font(font_entered: String):
@@ -73,6 +78,9 @@ func get_font() -> String:
 	
 func get_font_size() -> int:
 	return font_size
+	
+func get_points() -> int:
+	return points
 
 func has_point(point: Vector2) -> bool:
 	return $Body/Shape.shape.get_rect().has_point(to_local(point))

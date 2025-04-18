@@ -31,6 +31,7 @@ func draw_card():
 		hand.set(deck.keys()[0], deck.get(deck.keys()[0]))
 		deck[deck.keys()[0]].position = screen_size / Vector2(2, 2)
 		deck.erase(deck.keys()[0])
+		show_hand()
 		
 func show_hand():
 	var start = area_size.x / 5
@@ -52,12 +53,17 @@ func refresh_points():
 	$Area/Points.append_text(str(points))
 		
 func play_card(key: String) -> String:
-	var effect = hand[key].get_effect()
+	var name = hand[key].get_card_name()
 	remove_child(hand[key])
 	hand.erase(key)
 	show_hand()
 	refresh_points()
-	return effect
+	return name
+	
+func get_card_points(key: String) -> int:
+	var points = hand[key].get_points()
+	refresh_points()
+	return points
 	
 	
 func switch_side():
