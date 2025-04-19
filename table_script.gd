@@ -8,7 +8,10 @@ var screen_size
 var area_size
 var side_switched
 var points
+var peekable #number of turns cards can be peeked at for
+
 func _ready():
+	peekable = 0 
 	points = 0
 	deck = full_deck
 	side_switched = false
@@ -65,9 +68,23 @@ func get_card_points(key: String) -> int:
 	refresh_points()
 	return points
 	
+func change_card_points(key: String, num: int, type: String) -> void:
+	if key == "Onyx Blade": return
+	match type:
+		"multiply": hand[key].set_points(hand[key].get_points() * num)
+		"divide": hand[key].set_points(hand[key].get_points() / num)
+		"add": hand[key].set_points(hand[key].get_points() + num)
+		"subtract": hand[key].set_points(hand[key].get_points() - num)
 	
 func switch_side():
 	side_switched = true
 	$Area.rotate(3.14)
 	$Area.position = Vector2($Area.position.x, ($Area/Shape.shape.size.y * 0.5))
+	
+#card effect functions
+func new_turn() -> void: #everything that should happen at the beginning of a turn
+	if peekable > 0: peekable -= 1
+	
+func block_peeking(turns: int) -> void:
+	peekable = turns
 		

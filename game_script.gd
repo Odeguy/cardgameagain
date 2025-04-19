@@ -59,6 +59,8 @@ func random_card() -> Object:
 	return new_card
 
 func play():
+	player.new_turn()
+	opponent.new_turn()
 	turn_count += 1
 	if turn:
 		if turn_count > 2: player.draw_card()
@@ -85,8 +87,42 @@ func play():
 		
 func card_effect(name, points, sender, reciever):
 	match name:
+		"Hollow Mask":
+			sender.block_peeking(points)
+		"Pyrrhic Victory":
+			pass
+		"Monument to Pain":
+			pass
 		"Onyx Blade":
-			sender.points += points
+			pass #passive in table_script change_card_points()
+		"Restoring Flame":
+			pass
+		"Reckless Gamble":
+			pass
+		"Divination":
+			pass
+		"Vision Sharing":
+			pass
+		"Induction":
+			pass
+		"Deduction":
+			pass
+		"Cause and Effect":
+			pass
+		"Free Will":
+			pass
+		"Calamity":
+			pass
+		"Luck Streak":
+			pass
+		"Motivational Poster":
+			pass
+		"Rousing Speech":
+			pass
+		"Sharp Outfit":
+			pass
+		"Cognitive Dissonance":
+			pass
 	sender.refresh_points()
 	reciever.refresh_points()
 	
