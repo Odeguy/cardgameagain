@@ -6,7 +6,7 @@ var front = false
 var color
 var font
 var font_size
-var text_break = 0.04
+var text_time = 1
 var loaded
 var points
 
@@ -93,10 +93,10 @@ func load_text(gradually):
 		loaded = false
 		for char in card_name:
 			$Body/Front/NameLabel.append_text(char)
-			await get_tree().create_timer(text_break).timeout
+			await get_tree().create_timer(text_time / card_name.length()).timeout
 		for char in effect:
 			$Body/Front/EffectLabel.append_text(char)
-			await get_tree().create_timer(text_break).timeout
+			await get_tree().create_timer(text_time / effect.length()).timeout
 	else:
 		$Body/Front/NameLabel.append_text(card_name)	
 		$Body/Front/EffectLabel.append_text(effect)

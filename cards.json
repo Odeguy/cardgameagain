@@ -7,8 +7,8 @@
 		},
 		{
 			"name": "Pyrrhic Victory",
-			"effect": "Halve your opponents points and reduce your own points to zero",
-			"points": 1
+			"effect": "Divide your opponents points by this card's own points, and reduce your own points to zero",
+			"points": 2
 		},
 		{
 			"name": "Monument to Pain",
@@ -22,7 +22,7 @@
 		},
 		{
 			"name": "Restoring Flame",
-			"effect": "Restore your point value to it's peak from the start of your last turn to now",
+			"effect": "Restore your point value to it's peak this turn",
 			"points": 1
 		},
 		{

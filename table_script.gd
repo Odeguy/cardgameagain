@@ -8,11 +8,15 @@ var screen_size
 var area_size
 var side_switched
 var points
+var maxx_p #when true, cards are drawn when points are reduced 
 var peekable #number of turns cards can be peeked at for
+var points_history = [] #tracks the peak of points since the start of the previous turn
 
 func _ready():
+	maxx_p = false
 	peekable = 0 
-	points = 0
+	points_history = []
+	points = 10
 	deck = full_deck
 	side_switched = false
 	screen_size = get_viewport_rect().size
@@ -23,6 +27,7 @@ func _ready():
 	$Area/Points.set_position($Area/Shape.position - ($Area/Shape.shape.size / 2))
 	$Area/Points.set_size(Vector2(area_size.x / 8, area_size.y / 12))
 	refresh_points()
+	points_history.append(points)
 	
 func add_to_deck(card):
 	full_deck[card.card_name] = card
@@ -65,7 +70,6 @@ func play_card(key: String) -> String:
 	
 func get_card_points(key: String) -> int:
 	var points = hand[key].get_points()
-	refresh_points()
 	return points
 	
 func change_card_points(key: String, num: int, type: String) -> void:
@@ -75,6 +79,32 @@ func change_card_points(key: String, num: int, type: String) -> void:
 		"divide": hand[key].set_points(hand[key].get_points() / num)
 		"add": hand[key].set_points(hand[key].get_points() + num)
 		"subtract": hand[key].set_points(hand[key].get_points() - num)
+		
+func multiply_points(num: int):
+	change_points(num, "multiply")
+
+func divide_points(num: int):
+	change_points(num, "divide")
+	
+func add_points(num: int):
+	change_points(num, "add")
+	
+func subtract_points(num: int):
+	change_points(num, "subtract")
+	
+func change_points(num: int, type: String):
+	var initial_points = points
+	match type:
+		"multiply": points = points * num
+		"divide": points = points / num
+		"add": points = points + num
+		"subtract": points = points - num
+	refresh_points()
+	if maxx_p: maxx_p_activate(initial_points, points)
+	points_history.append(points)
+	
+func clear_points_history():
+	points_history.clear()
 	
 func switch_side():
 	side_switched = true
@@ -82,9 +112,13 @@ func switch_side():
 	$Area.position = Vector2($Area.position.x, ($Area/Shape.shape.size.y * 0.5))
 	
 #card effect functions
-func new_turn() -> void: #everything that should happen at the beginning of a turn
-	if peekable > 0: peekable -= 1
-	
 func block_peeking(turns: int) -> void:
 	peekable = turns
 		
+func maxx_p_activate(before: int, after: int):
+	maxx_p = true
+	if before < after: draw_card()
+	
+func restore_points_to_peak():
+	if !points_history.is_empty(): points = points_history.max()
+	

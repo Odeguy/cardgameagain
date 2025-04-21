@@ -22,7 +22,7 @@ func _ready():
 	opponent = table_scene.instantiate()
 	add_child(player)
 	add_child(opponent)
-	for i in range(10):
+	for i in range(50):
 		player.add_to_deck(random_card())
 		opponent.add_to_deck(random_card())
 	opponent.switch_side()
@@ -59,8 +59,7 @@ func random_card() -> Object:
 	return new_card
 
 func play():
-	player.new_turn()
-	opponent.new_turn()
+	new_turn()
 	turn_count += 1
 	if turn:
 		if turn_count > 2: player.draw_card()
@@ -85,18 +84,19 @@ func play():
 	if !gameover:
 		play()
 		
-func card_effect(name, points, sender, reciever):
-	match name:
+func card_effect(card_name, points, sender, reciever):
+	match card_name:
 		"Hollow Mask":
 			sender.block_peeking(points)
 		"Pyrrhic Victory":
-			pass
+			sender.multiply_points(0)
+			reciever.divide_points(points)
 		"Monument to Pain":
-			pass
+			sender.maxx_p_activate(0, 0)
 		"Onyx Blade":
 			pass #passive in table_script change_card_points()
 		"Restoring Flame":
-			pass
+			sender.restore_points_to_peak()
 		"Reckless Gamble":
 			pass
 		"Divination":
@@ -126,6 +126,13 @@ func card_effect(name, points, sender, reciever):
 	sender.refresh_points()
 	reciever.refresh_points()
 	
+func new_turn() -> void: #everything that should happen at the beginning of a turn
+	player.maxx_p = false
+	opponent.maxx_p = false
+	if player.peekable > 0: player.peekable -= 1
+	if opponent.peekable > 0: opponent.peekable -= 1
+	player.clear_points_history()
+	opponent.clear_points_history()
 		
 func _input(event: InputEvent) -> void:
 	for card in player.hand:
