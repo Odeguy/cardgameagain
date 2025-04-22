@@ -1,8 +1,8 @@
 extends Node2D
 @export var card_scene: PackedScene
 
-var hand = {}
-var full_deck = {}
+var hand = []
+var full_deck = []
 var deck
 var screen_size
 var area_size
@@ -30,15 +30,14 @@ func _ready():
 	points_history.append(points)
 	
 func add_to_deck(card):
-	full_deck[card.card_name] = card
+	full_deck.append(card)
 	card.hide()
 	add_child(card)
 
 func draw_card():
 	if(deck.size() > 0):
-		hand.set(deck.keys()[0], deck.get(deck.keys()[0]))
-		deck[deck.keys()[0]].position = screen_size / Vector2(2, 2)
-		deck.erase(deck.keys()[0])
+		hand.append(deck.pop_at(0))
+		hand.get(0).position = screen_size / Vector2(2, 2)
 		show_hand()
 		
 func show_hand():
@@ -47,38 +46,39 @@ func show_hand():
 	var increments = 1
 	for card in hand:
 		if(!side_switched):
-			hand[card].position.x = start + increment * increments + hand[card].get_size().x / 2
-			hand[card].position.y = area_size.y * 4 / 3
+			card.position.x = start + increment * increments + card.get_size().x / 2
+			card.position.y = area_size.y * 4 / 3
 		else:
-			hand[card].position.x = screen_size.x - (start + increment * increments + hand[card].get_size().x / 2)
-			hand[card].position.y = screen_size.y - area_size.y * 4 / 3
-		hand[card].rotation = $Area.rotation
+			card.position.x = screen_size.x - (start + increment * increments + card.get_size().x / 2)
+			card.position.y = screen_size.y - area_size.y * 4 / 3
+		card.rotation = $Area.rotation
 		increments += 1
-		hand[card].show()
+		if side_switched: card.toggle_side()
+		card.show()
 
 func refresh_points():
 	$Area/Points.clear()
 	$Area/Points.append_text(str(points))
 		
-func play_card(key: String) -> String:
-	var name = hand[key].get_card_name()
-	remove_child(hand[key])
-	hand.erase(key)
+func play_card(card: Object) -> Object:
+	remove_child(card)
+	hand.remove_at(hand.find(card))
 	show_hand()
 	refresh_points()
-	return name
+	return card
 	
-func get_card_points(key: String) -> int:
-	var points = hand[key].get_points()
+func get_card_points(card: Object) -> int:
+	var points = card.get_points()
 	return points
 	
-func change_card_points(key: String, num: int, type: String) -> void:
-	if key == "Onyx Blade": return
+func change_card_points(card: Object, num: int, type: String) -> void:
+	if card.get_card_name() == "Onyx Blade": return
 	match type:
-		"multiply": hand[key].set_points(hand[key].get_points() * num)
-		"divide": hand[key].set_points(hand[key].get_points() / num)
-		"add": hand[key].set_points(hand[key].get_points() + num)
-		"subtract": hand[key].set_points(hand[key].get_points() - num)
+		"multiply": card.set_points(card.get_points() * num)
+		"divide": card.set_points(card.get_points() / num)
+		"add": card.set_points(card.get_points() + num)
+		"subtract": card.set_points(card.get_points() - num)
+	card.load_text(false)
 		
 func multiply_points(num: int):
 	change_points(num, "multiply")
@@ -121,4 +121,11 @@ func maxx_p_activate(before: int, after: int):
 	
 func restore_points_to_peak():
 	if !points_history.is_empty(): points = points_history.max()
+
+func reveal_card(card: Object):
+	card.toggle_side()
+	await get_tree().create_timer(5).timeout
+	card.toggle_side()
 	
+func reveal_hand():
+	for card in hand: reveal_card(card)

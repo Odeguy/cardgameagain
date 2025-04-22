@@ -63,29 +63,27 @@ func play():
 	turn_count += 1
 	if turn:
 		if turn_count > 2: player.draw_card()
-		chosen_card = null
-		while chosen_card == null:
-			await get_tree().process_frame
+		await choose_card()
 		var points = player.get_card_points(chosen_card)
 		var card = player.play_card(chosen_card)
-		card_effect(card, points, player, opponent)
+		await card_effect(card, points, player, opponent)
 	else:
 		if turn_count > 2:
 			await get_tree().create_timer(0.5).timeout
 			opponent.draw_card()
 		await get_tree().create_timer(0.5).timeout
-		var random_card = opponent.hand.keys()[randi() % opponent.hand.size()]
+		var random_card = opponent.hand.get(randi() % opponent.hand.size())
 		var points = opponent.get_card_points(random_card)
 		var card = opponent.play_card(random_card)
-		card_effect(card, points, opponent, player)
+		await card_effect(card, points, opponent, player)
 	if player.points == points_goal or opponent.points == points_goal: gameover = true
 	if player.hand.size() == 0 or opponent.hand.size() == 0: gameover = true
 	turn = !turn
 	if !gameover:
 		play()
 		
-func card_effect(card_name, points, sender, reciever):
-	match card_name:
+func card_effect(card, points, sender, reciever):
+	match card.get_card_name():
 		"Hollow Mask":
 			sender.block_peeking(points)
 		"Pyrrhic Victory":
@@ -98,9 +96,12 @@ func card_effect(card_name, points, sender, reciever):
 		"Restoring Flame":
 			sender.restore_points_to_peak()
 		"Reckless Gamble":
-			pass
+			await choose_card()
+			if randi() % 10 > 6: sender.change_card_points(chosen_card, 2, "multiply")
+			else: 
+				player.play_card(chosen_card)
 		"Divination":
-			pass
+			opponent.reveal_hand()
 		"Vision Sharing":
 			pass
 		"Induction":
@@ -126,6 +127,12 @@ func card_effect(card_name, points, sender, reciever):
 	sender.refresh_points()
 	reciever.refresh_points()
 	
+func choose_card() -> Object:
+	chosen_card = null
+	while chosen_card == null:
+		await get_tree().process_frame
+	return chosen_card
+
 func new_turn() -> void: #everything that should happen at the beginning of a turn
 	player.maxx_p = false
 	opponent.maxx_p = false
@@ -136,5 +143,5 @@ func new_turn() -> void: #everything that should happen at the beginning of a tu
 		
 func _input(event: InputEvent) -> void:
 	for card in player.hand:
-		if(event is InputEventMouseButton and event.pressed and player.hand[card].loaded and player.hand[card].has_point(get_global_mouse_position())):
+		if(event is InputEventMouseButton and event.pressed and card.loaded and card.has_point(get_global_mouse_position())):
 			chosen_card = card

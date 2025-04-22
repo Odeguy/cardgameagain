@@ -61,6 +61,11 @@ func re_push():
 	if(font_size != null): $Body/Front/EffectLabel.push_font_size(font_size)
 	if(font != null): $Body/Front/EffectLabel.push_font(font)
 	
+	$Body/Front/PointsLabel.clear()
+	if(color != null): $Body/Front/PointsLabel.push_color(color)
+	if(font_size != null): $Body/Front/PointsLabel.push_font_size(font_size * 3)
+	if(font != null): $Body/Front/PointsLabel.push_font(font)
+	
 func get_size() -> Vector2:
 	return $Body/Shape.get_shape().size
 	
@@ -88,6 +93,7 @@ func has_point(point: Vector2) -> bool:
 func load_text(gradually):
 	$Body/Front/NameLabel.clear()
 	$Body/Front/EffectLabel.clear()
+	$Body/Front/PointsLabel.clear()
 	re_push()
 	if gradually:
 		loaded = false
@@ -100,4 +106,5 @@ func load_text(gradually):
 	else:
 		$Body/Front/NameLabel.append_text(card_name)	
 		$Body/Front/EffectLabel.append_text(effect)
+	$Body/Front/PointsLabel.append_text(str(points))
 	loaded = true

@@ -42,6 +42,15 @@ offset_bottom = 49.0
 scale = Vector2(0.1, 0.1)
 scroll_active = false
 
+[node name="PointsLabel" type="RichTextLabel" parent="Body/Front"]
+offset_left = -30.0
+offset_top = -22.0
+offset_right = 558.0
+offset_bottom = 210.0
+scale = Vector2(0.1, 0.1)
+scroll_active = false
+horizontal_alignment = 1
+
 [node name="EffectLabel" type="RichTextLabel" parent="Body/Front"]
 offset_left = -30.0
 offset_top = 2.0
