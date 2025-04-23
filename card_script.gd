@@ -14,17 +14,18 @@ func _ready():
 	loaded = false
 	$Body/Button.size = $Body/Shape.shape.size
 	$Body/Button.visible = false
-	toggle_side()
+	switch_side("front")
 	load_text(true)
 
-func toggle_side():
-	if(front):
+func switch_side(side: String):
+	if side == "back":
 		$Body/Back.show()
 		$Body/Front.hide()
-	else:
+		front = false
+	elif side == "front":
 		$Body/Back.hide()
 		$Body/Front.show()
-	front = !front
+		front = true
 	
 func set_color(color_entered: Color):
 	color = color_entered

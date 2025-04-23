@@ -8,6 +8,7 @@ var opponent
 var turn = true #player's turn
 var gameover
 var chosen_card
+var chosen_opponent_card
 var points_goal
 var text_break = 0.07
 var turn_count 
@@ -77,7 +78,7 @@ func play():
 		var card = opponent.play_card(random_card)
 		await card_effect(card, points, opponent, player)
 	if player.points == points_goal or opponent.points == points_goal: gameover = true
-	if player.hand.size() == 0 or opponent.hand.size() == 0: gameover = true
+	if player.hand.size() == 0 and player.deck.size() == 0 or opponent.hand.size() == 0 and opponent.hand.size() == 0: gameover = true
 	turn = !turn
 	if !gameover:
 		play()
@@ -103,11 +104,12 @@ func card_effect(card, points, sender, reciever):
 		"Divination":
 			opponent.reveal_hand()
 		"Vision Sharing":
-			pass
+			await choose_opponent_card()
+			opponent.reveal_card(chosen_opponent_card)
 		"Induction":
-			pass
+			print("Can't be done quite yet")
 		"Deduction":
-			pass
+			highlight_card(opponent.deck.get(0))
 		"Cause and Effect":
 			pass
 		"Free Will":
@@ -132,6 +134,15 @@ func choose_card() -> Object:
 	while chosen_card == null:
 		await get_tree().process_frame
 	return chosen_card
+	
+func choose_opponent_card() -> Object:
+	chosen_opponent_card = null
+	while chosen_opponent_card == null:
+		await get_tree().process_frame
+	return chosen_opponent_card
+	
+func highlight_card(card: Object) -> void:
+	pass
 
 func new_turn() -> void: #everything that should happen at the beginning of a turn
 	player.maxx_p = false
@@ -145,3 +156,6 @@ func _input(event: InputEvent) -> void:
 	for card in player.hand:
 		if(event is InputEventMouseButton and event.pressed and card.loaded and card.has_point(get_global_mouse_position())):
 			chosen_card = card
+	for card in opponent.hand:
+		if(event is InputEventMouseButton and event.pressed and card.loaded and card.has_point(get_global_mouse_position())):
+			chosen_opponent_card = card

@@ -53,7 +53,8 @@ func show_hand():
 			card.position.y = screen_size.y - area_size.y * 4 / 3
 		card.rotation = $Area.rotation
 		increments += 1
-		if side_switched: card.toggle_side()
+		if side_switched: card.switch_side("back")
+		else: card.switch_side("front")
 		card.show()
 
 func refresh_points():
@@ -123,9 +124,7 @@ func restore_points_to_peak():
 	if !points_history.is_empty(): points = points_history.max()
 
 func reveal_card(card: Object):
-	card.toggle_side()
-	await get_tree().create_timer(5).timeout
-	card.toggle_side()
+	card.switch_side("front")
 	
 func reveal_hand():
 	for card in hand: reveal_card(card)
