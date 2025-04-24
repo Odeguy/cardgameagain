@@ -38,7 +38,7 @@ func draw_card():
 	if(deck.size() > 0):
 		hand.append(deck.pop_at(0))
 		hand.get(0).position = screen_size / Vector2(2, 2)
-		show_hand()
+	show_hand()
 		
 func show_hand():
 	var start = area_size.x / 5
@@ -68,6 +68,9 @@ func play_card(card: Object) -> Object:
 	refresh_points()
 	return card
 	
+func get_hand_y() -> float:
+	return area_size.y * 4 / 3
+
 func get_card_points(card: Object) -> int:
 	var points = card.get_points()
 	return points

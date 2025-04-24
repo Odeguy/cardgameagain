@@ -12,8 +12,6 @@ var points
 
 func _ready():
 	loaded = false
-	$Body/Button.size = $Body/Shape.shape.size
-	$Body/Button.visible = false
 	switch_side("front")
 	load_text(true)
 

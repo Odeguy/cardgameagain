@@ -23,11 +23,11 @@ func _ready():
 	opponent = table_scene.instantiate()
 	add_child(player)
 	add_child(opponent)
-	for i in range(50):
+	for i in range(7):
 		player.add_to_deck(random_card())
 		opponent.add_to_deck(random_card())
 	opponent.switch_side()
-	for i in range(5):
+	for i in range(7):
 		player.draw_card()
 		opponent.draw_card()
 	player.show_hand()
@@ -75,10 +75,12 @@ func play():
 		await get_tree().create_timer(0.5).timeout
 		var random_card = opponent.hand.get(randi() % opponent.hand.size())
 		var points = opponent.get_card_points(random_card)
-		var card = opponent.play_card(random_card)
+		var card = await opponent.play_card(random_card)
 		await card_effect(card, points, opponent, player)
-	if player.points == points_goal or opponent.points == points_goal: gameover = true
-	if player.hand.size() == 0 and player.deck.size() == 0 or opponent.hand.size() == 0 and opponent.hand.size() == 0: gameover = true
+	if player.points == points_goal or opponent.points == points_goal:
+		gameover = true
+	if player.hand.size() == 0 and player.deck.size() == 0 or opponent.hand.size() == 0 and opponent.hand.size() == 0:
+		gameover = true
 	turn = !turn
 	if !gameover:
 		play()
@@ -140,9 +142,38 @@ func choose_opponent_card() -> Object:
 	while chosen_opponent_card == null:
 		await get_tree().process_frame
 	return chosen_opponent_card
+
+func duplicate_card(card: Object) -> Object:
+	var new_card = card_scene.instantiate()
+	new_card.card_name = card.card_name
+	new_card.effect = card.effect
+	new_card.points = card.points
+	new_card.color = card.color
+	new_card.font = card.font
+	new_card.font_size = card.font_size
+	return new_card
+	
 	
 func highlight_card(card: Object) -> void:
-	pass
+	if card == null: return
+	var projection = duplicate_card(card)
+	projection.switch_side("front")
+	projection.position = Vector2(projection.get_size().x, player.get_hand_y())
+	var button = Button.new()
+	button.text = "OK"
+	button.position = Vector2(projection.position.x - 15, projection.position.y - projection.get_size().y / 1.5)
+	button.pressed.connect(_on_button_pressed.bind(button))
+	add_child(projection)
+	add_child(button)
+	projection.show()
+	button.show()
+	while(button.text == "OK"):
+		await get_tree().process_frame
+	projection.queue_free()
+	button.queue_free()
+
+func _on_button_pressed(button):
+	if button.text == "OK": button.text = "COOL"
 
 func new_turn() -> void: #everything that should happen at the beginning of a turn
 	player.maxx_p = false
