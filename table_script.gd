@@ -75,6 +75,8 @@ func get_card_points(card: Object) -> int:
 	var points = card.get_points()
 	return points
 	
+func get_size() -> Vector2:
+	return $Area/Shape.shape.size
 func change_card_points(card: Object, num: int, type: String) -> void:
 	if card.get_card_name() == "Onyx Blade": return
 	match type:

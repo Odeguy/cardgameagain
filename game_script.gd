@@ -109,7 +109,7 @@ func card_effect(card, points, sender, reciever):
 			await choose_opponent_card()
 			opponent.reveal_card(chosen_opponent_card)
 		"Induction":
-			print("Can't be done quite yet")
+			print("Later")
 		"Deduction":
 			highlight_card(opponent.deck.get(0))
 		"Cause and Effect":
@@ -131,16 +131,30 @@ func card_effect(card, points, sender, reciever):
 	sender.refresh_points()
 	reciever.refresh_points()
 	
+func text_prompt(prompt: String) -> Object: #returns the label so that it can be deleted
+	var sign = RichTextLabel.new()
+	sign.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sign.push_font_size(5)
+	sign.append_text(prompt)
+	sign.set_position(player.position)
+	sign.set_size(player.get_size())
+	add_child(sign)
+	return sign
+
 func choose_card() -> Object:
+	var prompt = text_prompt("Choose One Of Your Cards")
 	chosen_card = null
 	while chosen_card == null:
 		await get_tree().process_frame
+	prompt.queue_free()
 	return chosen_card
 	
 func choose_opponent_card() -> Object:
+	var prompt = text_prompt("Choose An Opponent Card")
 	chosen_opponent_card = null
 	while chosen_opponent_card == null:
 		await get_tree().process_frame
+	prompt.queue_free()
 	return chosen_opponent_card
 
 func duplicate_card(card: Object) -> Object:
