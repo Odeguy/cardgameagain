@@ -52,6 +52,7 @@ func show_hand():
 			card.position.x = screen_size.x - (start + increment * increments + card.get_size().x / 2)
 			card.position.y = screen_size.y - area_size.y * 4 / 3
 		card.rotation = $Area.rotation
+		card.z_index = increments
 		increments += 1
 		if side_switched: card.switch_side("back")
 		else: card.switch_side("front")
@@ -86,6 +87,9 @@ func change_card_points(card: Object, num: int, type: String) -> void:
 		"subtract": card.set_points(card.get_points() - num)
 	card.load_text(false)
 		
+func get_area_position() -> Vector2:
+	return $Area.position
+
 func multiply_points(num: int):
 	change_points(num, "multiply")
 

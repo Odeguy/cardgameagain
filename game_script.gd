@@ -12,9 +12,11 @@ var chosen_opponent_card
 var points_goal
 var text_break = 0.07
 var turn_count 
+var screen_size = get_viewport_rect().size
 
 #initializes a new game
 func _ready():
+	screen_size = get_viewport_rect().size
 	turn_count = 0
 	points_goal = 500
 	gameover = false
@@ -23,7 +25,7 @@ func _ready():
 	opponent = table_scene.instantiate()
 	add_child(player)
 	add_child(opponent)
-	for i in range(7):
+	for i in range(14):
 		player.add_to_deck(random_card())
 		opponent.add_to_deck(random_card())
 	opponent.switch_side()
@@ -134,9 +136,9 @@ func card_effect(card, points, sender, reciever):
 func text_prompt(prompt: String) -> Object: #returns the label so that it can be deleted
 	var sign = RichTextLabel.new()
 	sign.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sign.push_font_size(5)
+	sign.push_font_size(25)
 	sign.append_text(prompt)
-	sign.set_position(player.position)
+	sign.set_position(Vector2(screen_size.x / 5, screen_size.y * 5 / 6))
 	sign.set_size(player.get_size())
 	add_child(sign)
 	return sign
@@ -167,24 +169,29 @@ func duplicate_card(card: Object) -> Object:
 	new_card.font_size = card.font_size
 	return new_card
 	
-	
+var highlight
+var highlight_button
 func highlight_card(card: Object) -> void:
 	if card == null: return
-	var projection = duplicate_card(card)
-	projection.switch_side("front")
-	projection.position = Vector2(projection.get_size().x, player.get_hand_y())
-	var button = Button.new()
-	button.text = "OK"
-	button.position = Vector2(projection.position.x - 15, projection.position.y - projection.get_size().y / 1.5)
-	button.pressed.connect(_on_button_pressed.bind(button))
-	add_child(projection)
-	add_child(button)
-	projection.show()
-	button.show()
-	while(button.text == "OK"):
+	remove_child(highlight)
+	remove_child(highlight_button)
+	highlight = duplicate_card(card)
+	highlight.switch_side("front")
+	highlight.position = Vector2(highlight.get_size().x, player.get_hand_y())
+	highlight_button = Button.new()
+	highlight_button.text = "OK"
+	highlight_button.position = Vector2(highlight.position.x - 15, highlight.position.y - highlight.get_size().y / 1.5)
+	highlight_button.pressed.connect(_on_button_pressed.bind(highlight_button))
+	add_child(highlight)
+	add_child(highlight_button)
+	highlight.show()
+	highlight_button.show()
+	while(highlight_button.text == "OK" and highlight != null):
 		await get_tree().process_frame
-	projection.queue_free()
-	button.queue_free()
+	highlight.queue_free()
+	highlight_button.queue_free()
+	highlight = null
+	highlight_button = null
 
 func _on_button_pressed(button):
 	if button.text == "OK": button.text = "COOL"

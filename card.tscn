@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bovhxyo1qdewj"]
+[gd_scene load_steps=7 format=3 uid="uid://bovhxyo1qdewj"]
 
 [ext_resource type="Script" uid="uid://cpacv3hesqk0p" path="res://card_script.gd" id="1_kikvd"]
 
@@ -7,11 +7,20 @@ size = Vector2(120, 166)
 
 [sub_resource type="Gradient" id="Gradient_kikvd"]
 offsets = PackedFloat32Array(0, 0.545455, 1)
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0.254902, 1, 1, 1, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.585062, 0.585062, 0.585062, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_rjlel"]
 gradient = SubResource("Gradient_kikvd")
 fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_rjlel"]
+offsets = PackedFloat32Array(0, 0.987013)
+colors = PackedColorArray(0, 0, 0, 1, 0.194349, 0.194349, 0.194349, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_q5obu"]
+gradient = SubResource("Gradient_rjlel")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0)
 
 [node name="Card" type="Node2D"]
 scale = Vector2(0.85, 0.85)
@@ -58,3 +67,9 @@ offset_right = 574.0
 offset_bottom = 278.0
 scale = Vector2(0.1, 0.1)
 scroll_active = false
+
+[node name="Border" type="Sprite2D" parent="Body"]
+z_index = -1
+position = Vector2(1.7647, -6.19888e-06)
+scale = Vector2(2.04044, 2.79412)
+texture = SubResource("GradientTexture2D_q5obu")
