@@ -1,8 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://ck3irc8fvjtpf"]
+[gd_scene load_steps=12 format=3 uid="uid://ck3irc8fvjtpf"]
 
 [ext_resource type="Script" uid="uid://bahr0s57d8d0c" path="res://game_script.gd" id="1_80nbo"]
 [ext_resource type="PackedScene" uid="uid://vrwxklrkd5bf" path="res://table.tscn" id="2_e2o6t"]
 [ext_resource type="PackedScene" uid="uid://bovhxyo1qdewj" path="res://card.tscn" id="3_feb5d"]
+[ext_resource type="Shader" uid="uid://cneixsuocxih3" path="res://baclground_shader.gdshader" id="4_fc0e3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7jktm"]
+shader = ExtResource("4_fc0e3")
+
+[sub_resource type="Gradient" id="Gradient_ryrav"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_eow3j"]
+gradient = SubResource("Gradient_ryrav")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_j5wjh"]
+
+[sub_resource type="Gradient" id="Gradient_vef74"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_hve3p"]
+gradient = SubResource("Gradient_vef74")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_mfdv2"]
+diffuse_texture = SubResource("GradientTexture2D_eow3j")
+normal_texture = SubResource("NoiseTexture2D_j5wjh")
+specular_texture = SubResource("GradientTexture2D_hve3p")
+specular_color = Color(1, 0.458824, 1, 1)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_80nbo")
@@ -14,3 +38,11 @@ offset_right = 96.0
 offset_bottom = 31.0
 fit_content = true
 scroll_active = false
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_7jktm")
+offset_left = -240.0
+offset_top = -362.0
+offset_right = 1490.0
+offset_bottom = 861.0
+texture = SubResource("CanvasTexture_mfdv2")
