@@ -13,6 +13,8 @@ var points_goal
 var text_break = 0.07
 var turn_count 
 var screen_size = get_viewport_rect().size
+var probability = 1  #multiplier of chance occurences
+var altered_probability_turns = 0
 
 #initializes a new game
 func _ready():
@@ -20,6 +22,7 @@ func _ready():
 	turn_count = 0
 	points_goal = 500
 	gameover = false
+	probability = 1
 	load_goal()
 	player = table_scene.instantiate()
 	opponent = table_scene.instantiate()
@@ -102,7 +105,7 @@ func card_effect(card, points, sender, reciever):
 			sender.restore_points_to_peak()
 		"Reckless Gamble":
 			await choose_card()
-			if randi() % 10 > 6: sender.change_card_points(chosen_card, 2, "multiply")
+			if chance_occurence(0.4): sender.change_card_points(chosen_card, 2, "multiply")
 			else: 
 				player.play_card(chosen_card)
 		"Divination":
@@ -115,15 +118,16 @@ func card_effect(card, points, sender, reciever):
 		"Deduction":
 			highlight_card(opponent.deck.get(0))
 		"Cause and Effect":
-			pass
+			print("Later")
 		"Free Will":
-			pass
+			print("Later")
 		"Calamity":
-			pass
+			set_probability(0.5, 5)
 		"Luck Streak":
-			pass
+			set_probability(2, 5)
 		"Motivational Poster":
-			pass
+			await choose_card()
+			sender.change_card_points(chosen_card, points, "add") #this method makes sure card is refreshed
 		"Rousing Speech":
 			pass
 		"Sharp Outfit":
@@ -159,6 +163,9 @@ func choose_opponent_card() -> Object:
 	prompt.queue_free()
 	return chosen_opponent_card
 
+func chance_occurence(chance: float) -> bool:
+	return randi() % 10 < chance * 10 * use_probability()
+	
 func duplicate_card(card: Object) -> Object:
 	var new_card = card_scene.instantiate()
 	new_card.card_name = card.card_name
@@ -195,6 +202,16 @@ func highlight_card(card: Object) -> void:
 
 func _on_button_pressed(button):
 	if button.text == "OK": button.text = "COOL"
+	
+func set_probability(num: float, turns: int) -> void:
+	probability = num
+	altered_probability_turns = turns
+	
+func use_probability() -> float: #all chances should be multiplied by this  ex. randi() % 10 < 6 * use_probability()
+	altered_probability_turns -= 1
+	var prob = probability
+	if altered_probability_turns == 0: probability = 1
+	return prob
 
 func new_turn() -> void: #everything that should happen at the beginning of a turn
 	player.maxx_p = false
