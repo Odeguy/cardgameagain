@@ -20,3 +20,7 @@ shape = SubResource("RectangleShape2D_nxs2u")
 [node name="Points" type="RichTextLabel" parent="Area"]
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="EndTurnButton" type="Button" parent="Area"]
+offset_right = 8.0
+offset_bottom = 8.0

@@ -7,7 +7,7 @@
 		},
 		{
 			"name": "Pyrrhic Victory",
-			"effect": "Divide your opponents points by this card's own points, and reduce your own points to zero",
+			"effect": "Divide your opponents points by [points value], and reduce your own points to zero",
 			"points": 2
 		},
 		{
@@ -17,8 +17,8 @@
 		},
 		{
 			"name": "Onyx Blade",
-			"effect": "This card's point value cannot be changed",
-			"points": 1
+			"effect": "Gain [points value] points. This card's point value cannot be changed",
+			"points": 10
 		},
 		{
 			"name": "Restoring Flame",
@@ -51,11 +51,6 @@
 			"points": 1
 		},
 		{
-			"name": "Cause and Effect",
-			"effect": "None",
-			"points": 1
-		},
-		{
 			"name": "Free Will",
 			"effect": "End a chain of card effects",
 			"points": 1
@@ -72,13 +67,8 @@
 		},
 		{
 			"name": "Motivational Poster",
-			"effect": "Add this card's point value to another card's point value",
+			"effect": "Add [points value] to another card's point value",
 			"points": 3
-		},
-		{
-			"name": "Rousing Speech",
-			"effect": "None",
-			"points": 1
 		},
 		{
 			"name": "Sharp Outfit",
@@ -89,6 +79,31 @@
 			"name": "Cognitive Dissonance",
 			"effect": "This card uses the most recently activated effect",
 			"points": 1
+		},
+		{
+			"name": "Outrage",
+			"effect": "Gain [points value] points, Opponent loses [points value] points",
+			"points": 8
+		},
+		{
+			"name": "Heart Attack",
+			"effect": "Opponent loses [points value] points",
+			"points": 13
+		},
+		{
+			"name": "Barrage",
+			"effect": "Gain an amount from 0 to [points value] points",
+			"points": 17
+		},
+		{
+			"name": "High Potential",
+			"effect": "Divide opponent's points by [points value] if [points value] > 0",
+			"points": -5
+		},
+		{
+			"name": "Surging Flame",
+			"effect": "Multiply points by [points value]",
+			"points": 3
 		}
 	]
 }

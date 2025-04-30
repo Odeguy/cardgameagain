@@ -26,6 +26,9 @@ func _ready():
 	$Area.position.y = screen_size.y - $Area/Shape.shape.size.y * 0.5
 	$Area/Points.set_position($Area/Shape.position - ($Area/Shape.shape.size / 2))
 	$Area/Points.set_size(Vector2(area_size.x / 8, area_size.y / 12))
+	$Area/EndTurnButton.set_position($Area/Shape.position - ($Area/Shape.shape.size / 2))
+	$Area/EndTurnButton.position.x += 25
+	$Area/EndTurnButton.set_size(Vector2(area_size.x / 10, area_size.y / 12))
 	refresh_points()
 	points_history.append(points)
 	

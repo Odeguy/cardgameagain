@@ -17,6 +17,7 @@ var turn_count
 var screen_size = get_viewport_rect().size
 var probability = 1  #multiplier of chance occurences
 var altered_probability_turns = 0
+var last_effect
 
 #initializes a new game
 func _ready():
@@ -31,9 +32,8 @@ func _ready():
 	add_child(player)
 	add_child(opponent)
 	for i in range(14):
-		player.add_to_deck(random_card())
-		player.add_to_deck(create_card(16))
-		opponent.add_to_deck(random_card())
+		player.add_to_deck(create_random_card())
+		opponent.add_to_deck(create_random_card())
 	opponent.switch_side()
 	for i in range(7):
 		player.draw_card()
@@ -57,7 +57,7 @@ func create_card(num: int) -> Object:
 	new_card.set_font_size(50)
 	return new_card
 
-func random_card() -> Object:
+func create_random_card() -> Object:
 	var new_card = card_scene.instantiate()
 	var num = randi() % cards["cards"].size()
 	new_card.set_card_name(cards["cards"][num]["name"])
@@ -70,28 +70,34 @@ func random_card() -> Object:
 func play():
 	new_turn()
 	turn_count += 1
-	if turn:
-		if turn_count > 2: player.draw_card()
-		await choose_card()
-		var points = player.get_card_points(chosen_card)
-		var card = player.play_card(chosen_card)
-		await card_effect(card, points, player, opponent)
-	else:
-		if turn_count > 2:
+	for i in range(3): #3 plays
+		if turn:
+			if turn_count > 2: player.draw_card()
+			#if x: break
+			await choose_card()
+			var points = player.get_card_points(chosen_card)
+			var card = player.play_card(chosen_card)
+			await card_effect(card, points, player, opponent)
+		else:
+			if turn_count > 2:
+				await get_tree().create_timer(0.5).timeout
+				opponent.draw_card()
 			await get_tree().create_timer(0.5).timeout
-			opponent.draw_card()
-		await get_tree().create_timer(0.5).timeout
-		var random_card = opponent.hand.get(randi() % opponent.hand.size())
-		var points = opponent.get_card_points(random_card)
-		var card = await opponent.play_card(random_card)
-		await card_effect(card, points, opponent, player)
-	if player.points == points_goal or opponent.points == points_goal:
-		gameover = true
-	if player.hand.size() == 0 and player.deck.size() == 0 or opponent.hand.size() == 0 and opponent.hand.size() == 0:
-		gameover = true
+			var random_card = random_opponent_card()
+			var points = opponent.get_card_points(random_card)
+			var card = await opponent.play_card(random_card)
+			await card_effect(card, points, opponent, player)
+		if player.points == points_goal or opponent.points == points_goal:
+			gameover = true
+		if player.hand.size() == 0 and player.deck.size() == 0 or opponent.hand.size() == 0 and opponent.hand.size() == 0:
+			gameover = true
 	turn = !turn
 	if !gameover:
 		play()
+		
+func random_opponent_card() -> Object:
+	var rand_card = opponent.hand.get(randi() % opponent.hand.size())
+	return rand_card
 		
 func card_effect(card, points, sender, reciever):
 	match card.get_card_name():
@@ -107,22 +113,22 @@ func card_effect(card, points, sender, reciever):
 		"Restoring Flame":
 			sender.restore_points_to_peak()
 		"Reckless Gamble":
-			if turn: #MUST BE ADDRESSED
-				await choose_card()
-				if chance_occurence(0.4): sender.change_card_points(chosen_card, 2, "multiply")
-				else: 
-					player.play_card(chosen_card)
+			var selection
+			if turn: selection = await choose_card()
+			else: selection = random_opponent_card()
+			if chance_occurence(0.4): sender.change_card_points(selection, 2, "multiply")
+			else: 
+				sender.play_card(selection)
 		"Divination":
-			opponent.reveal_hand()
+			if turn: opponent.reveal_hand() #Right now this does nothing for the opponent
 		"Vision Sharing":
-			if turn: #MUST BE ADDRESSED
+			if turn: #Right now this does nothing for the opponent
 				await choose_opponent_card()
-				opponent.reveal_card(chosen_opponent_card)
+				highlight_card(chosen_opponent_card)
 		"Induction":
 			print("Later")
 		"Deduction":
-			if turn: #MUST BE ADDRESSED
-				highlight_card(opponent.deck.get(0))
+			if turn: highlight_card(opponent.deck.get(0)) #Right now this does nothing for the opponent
 		"Cause and Effect":
 			print("Later")
 		"Free Will":
@@ -132,15 +138,33 @@ func card_effect(card, points, sender, reciever):
 		"Luck Streak":
 			set_probability(2, 5)
 		"Motivational Poster":
-			await choose_card()
-			sender.change_card_points(chosen_card, points, "add") #this method makes sure card is refreshed
+			var selection
+			if turn: selection = await choose_card()
+			else: selection = random_opponent_card()
+			sender.change_card_points(selection, points, "add") #this method makes sure card is refreshed
 		"Rousing Speech":
 			print("Later")
 		"Sharp Outfit":
-			if turn: #MUST BE ADDRESSED
+			if turn:
 				await choose_card_from_deck(sender, points)
+			else:
+				sender.hand.append(sender.deck.pop_at(randi() % 3))
 		"Cognitive Dissonance":
-			pass
+			if last_effect != null:
+				card.set_card_name(last_effect)
+				print(card.get_card_name())
+				card_effect(card, points, sender, reciever)
+		"Outrage":
+			sender.add_points(points)
+			reciever.subtract_points(points)
+		"Heart Attack":
+			reciever.subtract_points(points)
+		"Barrage":
+			sender.add_points(randi() % points)
+		"High Potential":
+			if points > 0: reciever.divide_points(points)
+				
+	if card.get_card_name() != "Cognitive Dissonance": last_effect = card.get_card_name()
 	sender.refresh_points()
 	reciever.refresh_points()
 	
@@ -229,8 +253,9 @@ func choose_card_from_deck(playing: Object, cards: int) -> Object:
 	var start = playing.area_size.x / 5
 	var increment = playing.area_size.x * 4 / 5 / (cards + 1)
 	var increments = 1
-	for i in range(0, cards - 1):
+	for i in range(0, cards):
 		var card = playing.deck.get(i)
+		if card == null: break
 		card.position.x = (start + increment * increments + card.get_size().x / 2)
 		card.position.y = playing.area_size.y * 4 / 3
 		card.z_index = increments

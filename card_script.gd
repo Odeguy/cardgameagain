@@ -94,16 +94,19 @@ func load_text(gradually):
 	$Body/Front/EffectLabel.clear()
 	$Body/Front/PointsLabel.clear()
 	re_push()
+	var effect_with_int = effect #effect but [points value] is replaced with the actual number
+	while effect_with_int.find("[points value]") != -1:
+		effect_with_int = effect_with_int.substr(0, effect_with_int.find("[points value]")) + str(points) + effect_with_int.substr(effect_with_int.find("[points value]") + "[points value]".length())
 	if gradually:
 		loaded = false
 		for char in card_name:
 			$Body/Front/NameLabel.append_text(char)
 			await get_tree().create_timer(text_time / card_name.length()).timeout
-		for char in effect:
+		for char in effect_with_int:
 			$Body/Front/EffectLabel.append_text(char)
 			await get_tree().create_timer(text_time / effect.length()).timeout
 	else:
-		$Body/Front/NameLabel.append_text(card_name)	
-		$Body/Front/EffectLabel.append_text(effect)
+		$Body/Front/NameLabel.append_text(card_name)
+		$Body/Front/EffectLabel.append_text(effect_with_int)
 	$Body/Front/PointsLabel.append_text(str(points))
 	loaded = true
