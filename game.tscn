@@ -34,6 +34,7 @@ table_scene = ExtResource("2_e2o6t")
 card_scene = ExtResource("3_feb5d")
 
 [node name="Goal" type="RichTextLabel" parent="."]
+z_index = 1
 offset_right = 96.0
 offset_bottom = 31.0
 fit_content = true

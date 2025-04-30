@@ -52,7 +52,7 @@ func show_hand():
 			card.position.x = screen_size.x - (start + increment * increments + card.get_size().x / 2)
 			card.position.y = screen_size.y - area_size.y * 4 / 3
 		card.rotation = $Area.rotation
-		card.z_index = increments
+		card.z_index = increments * 7
 		increments += 1
 		if side_switched: card.switch_side("back")
 		else: card.switch_side("front")

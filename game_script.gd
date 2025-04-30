@@ -9,6 +9,8 @@ var turn = true #player's turn
 var gameover
 var chosen_card
 var chosen_opponent_card
+var chosen_other_card
+var other_hand = []
 var points_goal
 var text_break = 0.07
 var turn_count 
@@ -30,6 +32,7 @@ func _ready():
 	add_child(opponent)
 	for i in range(14):
 		player.add_to_deck(random_card())
+		player.add_to_deck(create_card(16))
 		opponent.add_to_deck(random_card())
 	opponent.switch_side()
 	for i in range(7):
@@ -104,19 +107,22 @@ func card_effect(card, points, sender, reciever):
 		"Restoring Flame":
 			sender.restore_points_to_peak()
 		"Reckless Gamble":
-			await choose_card()
-			if chance_occurence(0.4): sender.change_card_points(chosen_card, 2, "multiply")
-			else: 
-				player.play_card(chosen_card)
+			if turn: #MUST BE ADDRESSED
+				await choose_card()
+				if chance_occurence(0.4): sender.change_card_points(chosen_card, 2, "multiply")
+				else: 
+					player.play_card(chosen_card)
 		"Divination":
 			opponent.reveal_hand()
 		"Vision Sharing":
-			await choose_opponent_card()
-			opponent.reveal_card(chosen_opponent_card)
+			if turn: #MUST BE ADDRESSED
+				await choose_opponent_card()
+				opponent.reveal_card(chosen_opponent_card)
 		"Induction":
 			print("Later")
 		"Deduction":
-			highlight_card(opponent.deck.get(0))
+			if turn: #MUST BE ADDRESSED
+				highlight_card(opponent.deck.get(0))
 		"Cause and Effect":
 			print("Later")
 		"Free Will":
@@ -129,9 +135,10 @@ func card_effect(card, points, sender, reciever):
 			await choose_card()
 			sender.change_card_points(chosen_card, points, "add") #this method makes sure card is refreshed
 		"Rousing Speech":
-			pass
+			print("Later")
 		"Sharp Outfit":
-			pass
+			if turn: #MUST BE ADDRESSED
+				await choose_card_from_deck(sender, points)
 		"Cognitive Dissonance":
 			pass
 	sender.refresh_points()
@@ -212,6 +219,39 @@ func use_probability() -> float: #all chances should be multiplied by this  ex. 
 	var prob = probability
 	if altered_probability_turns == 0: probability = 1
 	return prob
+	
+func choose_card_from_deck(playing: Object, cards: int) -> Object:
+	if playing.deck.is_empty():
+		return
+		
+	for card in playing.hand:
+		card.hide()
+	var start = playing.area_size.x / 5
+	var increment = playing.area_size.x * 4 / 5 / (cards + 1)
+	var increments = 1
+	for i in range(0, cards - 1):
+		var card = playing.deck.get(i)
+		card.position.x = (start + increment * increments + card.get_size().x / 2)
+		card.position.y = playing.area_size.y * 4 / 3
+		card.z_index = increments
+		increments += 1
+		other_hand.append(card)
+		add_child(card)
+		card.switch_side("front")
+		card.show()
+	var prompt = text_prompt("Choose A Card From The Deck")
+	chosen_other_card = null
+	while chosen_other_card == null:
+		await get_tree().process_frame
+	for card in other_hand:
+		card.hide()
+		remove_child(card)
+	other_hand.clear()
+	playing.hand.append(playing.deck.pop_at(playing.deck.find(chosen_other_card)))
+	playing.show_hand()
+	prompt.queue_free()
+	return chosen_other_card
+	
 
 func new_turn() -> void: #everything that should happen at the beginning of a turn
 	player.maxx_p = false
@@ -223,8 +263,11 @@ func new_turn() -> void: #everything that should happen at the beginning of a tu
 		
 func _input(event: InputEvent) -> void:
 	for card in player.hand:
-		if(event is InputEventMouseButton and event.pressed and card.loaded and card.has_point(get_global_mouse_position())):
+		if(event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and card.loaded and card.has_point(get_global_mouse_position())):
 			chosen_card = card
 	for card in opponent.hand:
-		if(event is InputEventMouseButton and event.pressed and card.loaded and card.has_point(get_global_mouse_position())):
+		if(event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and card.loaded and card.has_point(get_global_mouse_position())):
 			chosen_opponent_card = card
+	for card in other_hand:
+		if(event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and card.loaded and card.has_point(get_global_mouse_position())):
+			chosen_other_card = card

@@ -77,13 +77,13 @@
 		},
 		{
 			"name": "Rousing Speech",
-			"effect": "Unflip a flipped card",
+			"effect": "None",
 			"points": 1
 		},
 		{
 			"name": "Sharp Outfit",
-			"effect": "View the top 3 cards in your deck and add 1 to your deck",
-			"points": 1
+			"effect": "View the top [points value] cards in your deck and add 1 to your hand",
+			"points": 3
 		},
 		{
 			"name": "Cognitive Dissonance",
