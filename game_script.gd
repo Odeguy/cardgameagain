@@ -73,7 +73,7 @@ func create_random_card() -> Object:
 func play():
 	new_turn()
 	turn_count += 1
-	for i in range(3): #3 plays
+	for i in range(3): #3 plays, 0 - 2
 		if turn:
 			if turn_count > 2: player.draw_card()
 			if await make_play_or_deploy(): break
@@ -84,14 +84,17 @@ func play():
 			if turn_count > 2:
 				await get_tree().create_timer(0.5).timeout
 				opponent.draw_card()
-			if chance_occurence(0.08) or card_queue.size() == 3: deploy_queue()
+			if chance_occurence(0.08):
+				print(card_queue.size())
+				deploy_queue()
+				break
 			await get_tree().create_timer(0.5).timeout
 			var random_card = random_opponent_card()
 			var points = opponent.get_card_points(random_card)
 			var card = await opponent.play_card(random_card)
 			await add_to_card_queue(card, points, opponent, player)
 			await get_tree().create_timer(0.5).timeout
-			if i == 3: await deploy_queue()
+			if i == 2: await deploy_queue() #final iteration
 	if player.points == points_goal or opponent.points == points_goal:
 		gameover = true
 	if player.hand.size() == 0 and player.deck.size() == 0 or opponent.hand.size() == 0 and opponent.hand.size() == 0:
@@ -105,26 +108,27 @@ func random_opponent_card() -> Object:
 	return rand_card
 		
 func make_play_or_deploy() -> bool: #returns true if deploying
+	show_card_queue()
 	chosen_card = null
 	deploy = false
 	var prompt = text_prompt("Play a card or Deploy")
 	player.get_end_turn_button().pressed.connect(_on_deploy_pressed.bind())
 	while chosen_card == null and !deploy:
 		await get_tree().process_frame
-	if card_queue.size() == 3: 
-		await deploy_queue()
-		return true
 	prompt.queue_free()
-	if deploy:
+	if (chosen_card != null and card_queue.size() == 2) or deploy:
 		await deploy_queue()
 		return true
 	return false
 	
 	
 func deploy_queue() -> void:
-	for card in card_queue:
+	if card_queue.is_empty(): return
+	var start = card_queue.size() - 1
+	for i in range(start, -1, -1):
 		await get_tree().create_timer(0.5).timeout
-		card_queue.erase(card)
+		var card = card_queue[i]
+		card_queue.remove_at(i)
 		card[0].hide()
 		show_card_queue()
 		await card_effect(card[0], card[1], card[2], card[3])
@@ -138,8 +142,8 @@ func add_to_card_queue(card, points, sender, reciever):
 	show_card_queue()
 		
 func show_card_queue():
-	var start = screen_size.x * 4 / 10
-	var increment = screen_size.x * 2 / 10 / (card_queue.size() + 1)
+	var start = screen_size.x * 3 / 10
+	var increment = screen_size.x * 4 / 10 / (card_queue.size() + 1)
 	var increments = 1
 	for c in card_queue:
 		var card = c[0]
@@ -309,7 +313,7 @@ func choose_card_from_deck(playing: Object, cards: int) -> Object:
 		var card = playing.deck.get(i)
 		if card == null: break
 		card.position.x = (start + increment * increments + card.get_size().x / 2)
-		card.position.y = playing.area_size.y * 4 / 3
+		card.position.y = playing.area_size.y * 5 / 3
 		card.z_index = increments
 		increments += 1
 		other_hand.append(card)
