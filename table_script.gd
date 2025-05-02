@@ -26,9 +26,9 @@ func _ready():
 	$Area.position.y = screen_size.y - $Area/Shape.shape.size.y * 0.5
 	$Area/Points.set_position($Area/Shape.position - ($Area/Shape.shape.size / 2))
 	$Area/Points.set_size(Vector2(area_size.x / 8, area_size.y / 12))
-	$Area/EndTurnButton.set_position($Area/Shape.position - ($Area/Shape.shape.size / 2))
-	$Area/EndTurnButton.position.x += 25
-	$Area/EndTurnButton.set_size(Vector2(area_size.x / 10, area_size.y / 12))
+	$Area/end_turn_button.set_position($Area/Shape.position - ($Area/Shape.shape.size / 2))
+	$Area/end_turn_button.position.x += 25
+	$Area/end_turn_button.set_size(Vector2(area_size.x / 10, area_size.y / 12))
 	refresh_points()
 	points_history.append(points)
 	
@@ -50,10 +50,10 @@ func show_hand():
 	for card in hand:
 		if(!side_switched):
 			card.position.x = start + increment * increments + card.get_size().x / 2
-			card.position.y = area_size.y * 4 / 3
+			card.position.y = area_size.y * 5 / 3
 		else:
 			card.position.x = screen_size.x - (start + increment * increments + card.get_size().x / 2)
-			card.position.y = screen_size.y - area_size.y * 4 / 3
+			card.position.y = screen_size.y - area_size.y * 5 / 3
 		card.rotation = $Area.rotation
 		card.z_index = increments * 7
 		increments += 1
@@ -73,7 +73,7 @@ func play_card(card: Object) -> Object:
 	return card
 	
 func get_hand_y() -> float:
-	return area_size.y * 4 / 3
+	return area_size.y * 5 / 3
 
 func get_card_points(card: Object) -> int:
 	var points = card.get_points()
@@ -81,6 +81,10 @@ func get_card_points(card: Object) -> int:
 	
 func get_size() -> Vector2:
 	return $Area/Shape.shape.size
+	
+func get_end_turn_button() -> Object:
+	return $Area/end_turn_button
+
 func change_card_points(card: Object, num: int, type: String) -> void:
 	if card.get_card_name() == "Onyx Blade": return
 	match type:

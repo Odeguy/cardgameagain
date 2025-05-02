@@ -18,10 +18,13 @@ var screen_size = get_viewport_rect().size
 var probability = 1  #multiplier of chance occurences
 var altered_probability_turns = 0
 var last_effect
+var card_queue = []
+var deploy
 
 #initializes a new game
 func _ready():
 	screen_size = get_viewport_rect().size
+	card_queue = []
 	turn_count = 0
 	points_goal = 500
 	gameover = false
@@ -73,24 +76,26 @@ func play():
 	for i in range(3): #3 plays
 		if turn:
 			if turn_count > 2: player.draw_card()
-			#if x: break
-			await choose_card()
+			if await make_play_or_deploy(): break
 			var points = player.get_card_points(chosen_card)
 			var card = player.play_card(chosen_card)
-			await card_effect(card, points, player, opponent)
+			await add_to_card_queue(card, points, player, opponent)
 		else:
 			if turn_count > 2:
 				await get_tree().create_timer(0.5).timeout
 				opponent.draw_card()
+			if chance_occurence(0.08) or card_queue.size() == 3: deploy_queue()
 			await get_tree().create_timer(0.5).timeout
 			var random_card = random_opponent_card()
 			var points = opponent.get_card_points(random_card)
 			var card = await opponent.play_card(random_card)
-			await card_effect(card, points, opponent, player)
-		if player.points == points_goal or opponent.points == points_goal:
-			gameover = true
-		if player.hand.size() == 0 and player.deck.size() == 0 or opponent.hand.size() == 0 and opponent.hand.size() == 0:
-			gameover = true
+			await add_to_card_queue(card, points, opponent, player)
+			await get_tree().create_timer(0.5).timeout
+			if i == 3: await deploy_queue()
+	if player.points == points_goal or opponent.points == points_goal:
+		gameover = true
+	if player.hand.size() == 0 and player.deck.size() == 0 or opponent.hand.size() == 0 and opponent.hand.size() == 0:
+		gameover = true
 	turn = !turn
 	if !gameover:
 		play()
@@ -99,6 +104,53 @@ func random_opponent_card() -> Object:
 	var rand_card = opponent.hand.get(randi() % opponent.hand.size())
 	return rand_card
 		
+func make_play_or_deploy() -> bool: #returns true if deploying
+	chosen_card = null
+	deploy = false
+	var prompt = text_prompt("Play a card or Deploy")
+	player.get_end_turn_button().pressed.connect(_on_deploy_pressed.bind())
+	while chosen_card == null and !deploy:
+		await get_tree().process_frame
+	if card_queue.size() == 3: 
+		await deploy_queue()
+		return true
+	prompt.queue_free()
+	if deploy:
+		await deploy_queue()
+		return true
+	return false
+	
+	
+func deploy_queue() -> void:
+	for card in card_queue:
+		await get_tree().create_timer(0.5).timeout
+		card_queue.erase(card)
+		card[0].hide()
+		show_card_queue()
+		await card_effect(card[0], card[1], card[2], card[3])
+		card[0].queue_free()
+		
+func _on_deploy_pressed():
+	deploy = true
+
+func add_to_card_queue(card, points, sender, reciever):
+	card_queue.append([card, points, sender, reciever])
+	show_card_queue()
+		
+func show_card_queue():
+	var start = screen_size.x * 4 / 10
+	var increment = screen_size.x * 2 / 10 / (card_queue.size() + 1)
+	var increments = 1
+	for c in card_queue:
+		var card = c[0]
+		card.position.x = start + increment * increments + card.get_size().x / 2
+		card.position.y = screen_size.y * 1 / 2
+		card.z_index = increments * 7
+		increments += 1
+		card.switch_side("front")
+		add_child(card)
+		card.show()
+
 func card_effect(card, points, sender, reciever):
 	match card.get_card_name():
 		"Hollow Mask":
@@ -173,7 +225,7 @@ func text_prompt(prompt: String) -> Object: #returns the label so that it can be
 	sign.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sign.push_font_size(25)
 	sign.append_text(prompt)
-	sign.set_position(Vector2(screen_size.x / 5, screen_size.y * 5 / 6))
+	sign.set_position(Vector2(screen_size.x / 5, screen_size.y * 4.2 / 6))
 	sign.set_size(player.get_size())
 	add_child(sign)
 	return sign

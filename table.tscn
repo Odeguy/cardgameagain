@@ -21,6 +21,7 @@ shape = SubResource("RectangleShape2D_nxs2u")
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="EndTurnButton" type="Button" parent="Area"]
+[node name="end_turn_button" type="Button" parent="Area"]
 offset_right = 8.0
 offset_bottom = 8.0
+text = "DEPLOY"
