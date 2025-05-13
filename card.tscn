@@ -1,75 +1,45 @@
-[gd_scene load_steps=7 format=3 uid="uid://bovhxyo1qdewj"]
+[gd_scene load_steps=5 format=3 uid="uid://bovhxyo1qdewj"]
 
 [ext_resource type="Script" uid="uid://cpacv3hesqk0p" path="res://card_script.gd" id="1_kikvd"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rjlel"]
-size = Vector2(120, 166)
-
-[sub_resource type="Gradient" id="Gradient_kikvd"]
-offsets = PackedFloat32Array(0, 0.545455, 1)
-colors = PackedColorArray(1, 1, 1, 1, 0.585062, 0.585062, 0.585062, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_rjlel"]
-gradient = SubResource("Gradient_kikvd")
-fill_to = Vector2(0, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kikvd"]
 
 [sub_resource type="Gradient" id="Gradient_rjlel"]
-offsets = PackedFloat32Array(0, 0.987013)
-colors = PackedColorArray(0, 0, 0, 1, 0.194349, 0.194349, 0.194349, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_q5obu"]
 gradient = SubResource("Gradient_rjlel")
-fill_from = Vector2(0, 1)
-fill_to = Vector2(0, 0)
 
 [node name="Card" type="Node2D"]
 scale = Vector2(0.85, 0.85)
 script = ExtResource("1_kikvd")
 
-[node name="Body" type="StaticBody2D" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="."]
+offset_left = -64.0
+offset_top = -89.0
+offset_right = 67.0
+offset_bottom = 89.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kikvd")
 
-[node name="Shape" type="CollisionShape2D" parent="Body"]
+[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="VFlowContainer" type="VFlowContainer" parent="PanelContainer/HSplitContainer"]
 visible = false
-shape = SubResource("RectangleShape2D_rjlel")
+layout_mode = 2
 
-[node name="Back" type="Sprite2D" parent="Body"]
-visible = false
-position = Vector2(1.5, -0.500004)
-scale = Vector2(1.92188, 2.64063)
-texture = SubResource("GradientTexture2D_rjlel")
-
-[node name="Front" type="Sprite2D" parent="Body"]
-position = Vector2(1.5, -0.500004)
-scale = Vector2(1.92188, 2.64063)
-texture = SubResource("GradientTexture2D_rjlel")
-
-[node name="NameLabel" type="RichTextLabel" parent="Body/Front"]
-offset_left = -30.0
-offset_top = -31.0
-offset_right = 568.0
-offset_bottom = 49.0
-scale = Vector2(0.1, 0.1)
+[node name="NameLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/VFlowContainer"]
+layout_mode = 2
 scroll_active = false
 
-[node name="PointsLabel" type="RichTextLabel" parent="Body/Front"]
-offset_left = -30.0
-offset_top = -22.0
-offset_right = 558.0
-offset_bottom = 210.0
-scale = Vector2(0.1, 0.1)
+[node name="PointsLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/VFlowContainer"]
+layout_mode = 2
 scroll_active = false
 horizontal_alignment = 1
 
-[node name="EffectLabel" type="RichTextLabel" parent="Body/Front"]
-offset_left = -30.0
-offset_top = 2.0
-offset_right = 574.0
-offset_bottom = 278.0
-scale = Vector2(0.1, 0.1)
+[node name="EffectLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/VFlowContainer"]
+layout_mode = 2
 scroll_active = false
 
-[node name="Border" type="Sprite2D" parent="Body"]
-z_index = -1
-position = Vector2(1.7647, -6.19888e-06)
-scale = Vector2(2.04044, 2.79412)
+[node name="Cardart" type="TextureRect" parent="PanelContainer/HSplitContainer"]
+layout_mode = 2
 texture = SubResource("GradientTexture2D_q5obu")

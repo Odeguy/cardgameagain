@@ -73,7 +73,7 @@ func create_random_card() -> Object:
 func play():
 	new_turn()
 	turn_count += 1
-	for i in range(3): #3 plays, 0 - 2
+	for i in range(4): #3 plays, 0 - 2
 		if turn:
 			if turn_count > 2: player.draw_card()
 			if await make_play_or_deploy(): break
@@ -111,12 +111,18 @@ func make_play_or_deploy() -> bool: #returns true if deploying
 	show_card_queue()
 	chosen_card = null
 	deploy = false
-	var prompt = text_prompt("Play a card or Deploy")
+	var prompt
 	player.get_end_turn_button().pressed.connect(_on_deploy_pressed.bind())
-	while chosen_card == null and !deploy:
-		await get_tree().process_frame
+	if card_queue.size() == 3:
+		prompt = text_prompt("Deploy")
+		while !deploy:
+			await get_tree().process_frame
+	else:
+		prompt = text_prompt("Play a card or Deploy")
+		while chosen_card == null and !deploy:
+			await get_tree().process_frame
 	prompt.queue_free()
-	if (chosen_card != null and card_queue.size() == 2) or deploy:
+	if deploy:
 		await deploy_queue()
 		return true
 	return false
