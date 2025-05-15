@@ -1,45 +1,56 @@
 [gd_scene load_steps=5 format=3 uid="uid://bovhxyo1qdewj"]
 
 [ext_resource type="Script" uid="uid://cpacv3hesqk0p" path="res://card_script.gd" id="1_kikvd"]
+[ext_resource type="Texture2D" uid="uid://bjv2vthlxmkio" path="res://cardarts/default.png" id="2_q5obu"]
+[ext_resource type="Texture2D" uid="uid://chfj02as4b4u7" path="res://cardframes/default.png" id="3_e484p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kikvd"]
-
-[sub_resource type="Gradient" id="Gradient_rjlel"]
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_q5obu"]
-gradient = SubResource("Gradient_rjlel")
 
 [node name="Card" type="Node2D"]
 scale = Vector2(0.85, 0.85)
 script = ExtResource("1_kikvd")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-offset_left = -64.0
+offset_left = -60.0
 offset_top = -89.0
-offset_right = 67.0
+offset_right = 59.0
 offset_bottom = 89.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_kikvd")
 
 [node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer"]
 layout_mode = 2
 
-[node name="VFlowContainer" type="VFlowContainer" parent="PanelContainer/HSplitContainer"]
+[node name="Text" type="VFlowContainer" parent="PanelContainer/HSplitContainer"]
 visible = false
 layout_mode = 2
 
-[node name="NameLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/VFlowContainer"]
+[node name="NameLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/Text"]
 layout_mode = 2
+fit_content = true
 scroll_active = false
 
-[node name="PointsLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/VFlowContainer"]
+[node name="PointsLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/Text"]
 layout_mode = 2
 scroll_active = false
 horizontal_alignment = 1
 
-[node name="EffectLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/VFlowContainer"]
+[node name="EffectLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/Text"]
 layout_mode = 2
 scroll_active = false
 
-[node name="Cardart" type="TextureRect" parent="PanelContainer/HSplitContainer"]
+[node name="Body" type="AspectRatioContainer" parent="PanelContainer/HSplitContainer"]
 layout_mode = 2
-texture = SubResource("GradientTexture2D_q5obu")
+stretch_mode = 3
+
+[node name="Art" type="TextureRect" parent="PanelContainer/HSplitContainer/Body"]
+layout_mode = 2
+texture = ExtResource("2_q5obu")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Frame" type="TextureRect" parent="PanelContainer/HSplitContainer/Body"]
+z_index = 1
+layout_mode = 2
+texture = ExtResource("3_e484p")
+expand_mode = 1
+stretch_mode = 5
