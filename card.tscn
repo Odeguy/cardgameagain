@@ -5,52 +5,68 @@
 [ext_resource type="Texture2D" uid="uid://chfj02as4b4u7" path="res://cardframes/default.png" id="3_e484p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kikvd"]
+resource_local_to_scene = true
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.548366, 0.906853, 0.441576, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [node name="Card" type="Node2D"]
 scale = Vector2(0.85, 0.85)
 script = ExtResource("1_kikvd")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-offset_left = -60.0
-offset_top = -89.0
-offset_right = 59.0
-offset_bottom = 89.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -55.294
+offset_top = -76.4712
+offset_right = 450.706
+offset_bottom = 666.529
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.2, 0.2)
 theme_override_styles/panel = SubResource("StyleBoxFlat_kikvd")
 
-[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer"]
+[node name="Body" type="AspectRatioContainer" parent="PanelContainer"]
+z_index = 2
 layout_mode = 2
 
-[node name="Text" type="VFlowContainer" parent="PanelContainer/HSplitContainer"]
-visible = false
+[node name="Frame" type="TextureRect" parent="PanelContainer/Body"]
+z_index = 2
 layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_e484p")
 
-[node name="NameLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/Text"]
+[node name="Art" type="TextureRect" parent="PanelContainer/Body"]
+z_index = 1
 layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_q5obu")
+
+[node name="NameLabel" type="RichTextLabel" parent="PanelContainer"]
+layout_mode = 2
+mouse_filter = 2
 fit_content = true
 scroll_active = false
 
-[node name="PointsLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/Text"]
+[node name="PointsLabel" type="RichTextLabel" parent="PanelContainer"]
 layout_mode = 2
+mouse_filter = 2
 scroll_active = false
 horizontal_alignment = 1
 
-[node name="EffectLabel" type="RichTextLabel" parent="PanelContainer/HSplitContainer/Text"]
+[node name="EffectLabel" type="RichTextLabel" parent="PanelContainer"]
 layout_mode = 2
+mouse_filter = 2
 scroll_active = false
 
-[node name="Body" type="AspectRatioContainer" parent="PanelContainer/HSplitContainer"]
-layout_mode = 2
-stretch_mode = 3
-
-[node name="Art" type="TextureRect" parent="PanelContainer/HSplitContainer/Body"]
-layout_mode = 2
-texture = ExtResource("2_q5obu")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Frame" type="TextureRect" parent="PanelContainer/HSplitContainer/Body"]
-z_index = 1
-layout_mode = 2
-texture = ExtResource("3_e484p")
-expand_mode = 1
-stretch_mode = 5
+[connection signal="mouse_entered" from="PanelContainer" to="." method="_on_panel_container_mouse_entered"]
+[connection signal="mouse_exited" from="PanelContainer" to="." method="_on_panel_container_mouse_exited"]

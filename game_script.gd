@@ -2,24 +2,24 @@ extends Node2D
 @export var table_scene: PackedScene
 @export var card_scene: PackedScene
 
-var cards = JSON.parse_string(FileAccess.get_file_as_string("res://cards.json"))
-var player
-var opponent
-var turn = true #player's turn
-var gameover
-var chosen_card
-var chosen_opponent_card
-var chosen_other_card
-var other_hand = []
-var points_goal
-var text_break = 0.07
-var turn_count 
-var screen_size = get_viewport_rect().size
-var probability = 1  #multiplier of chance occurences
-var altered_probability_turns = 0
-var last_effect
-var card_queue = []
-var deploy
+var cards: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://cards.json"))
+var player: Object
+var opponent: Object
+var turn: bool = true #player's turn
+var gameover: bool
+var chosen_card: Object
+var chosen_opponent_card: Object
+var chosen_other_card: Object
+var other_hand: Array = []
+var points_goal: int
+var text_break: float = 0.07
+var turn_count: int 
+var screen_size: Vector2 = get_viewport_rect().size
+var probability: int = 1  #multiplier of chance occurences
+var altered_probability_turns: int = 0
+var last_effect: String
+var card_queue: Array = []
+var deploy: bool
 
 #initializes a new game
 func _ready():
@@ -232,6 +232,7 @@ func card_effect(card, points, sender, reciever):
 	
 func text_prompt(prompt: String) -> Object: #returns the label so that it can be deleted
 	var sign = RichTextLabel.new()
+	sign.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sign.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sign.push_font_size(25)
 	sign.append_text(prompt)
