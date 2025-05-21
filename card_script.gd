@@ -111,27 +111,32 @@ func load_text(gradually: bool):
 
 func extend_margin(length: int, duration: int) -> void:
 	var tween = get_tree().create_tween()
+	tween.set_speed_scale(7)
 	var stylebox := $PanelContainer.get_theme_stylebox("panel") as StyleBoxFlat
 	if stylebox == null:
 		push_error("No StyleBoxFlat found for 'panel'")
 		return
 
-	# Ensure you're not modifying a shared resource
 	if not $PanelContainer.has_theme_stylebox_override("panel"):
 		stylebox = stylebox.duplicate()
 		$PanelContainer.add_theme_stylebox_override("panel", stylebox)
-
-	# Tween the border width directly
+		
 	tween.tween_property(stylebox, "expand_margin_left", length, duration)
+	tween.set_parallel()
+	tween.tween_property(stylebox, "expand_margin_right", 50, duration)
+	tween.tween_property(stylebox, "expand_margin_bottom", 50, duration)
+	tween.tween_property(stylebox, "expand_margin_top", 50, duration)
 
 @onready var z_default: int = z_index
 @onready var unextended_length: int = $PanelContainer.size.x
 @onready var first_position: Vector2 = $PanelContainer.position	
 func _on_panel_container_mouse_entered():
-	z_index = 1000
 	extend_margin(unextended_length, 1)
 	#load_text(true)
 	
 func _on_panel_container_mouse_exited():
-	await extend_margin(10, 1)
+	extend_margin(10, 1)
+	await get_tree().create_timer(200).timeout
 	z_index = z_default
+	
+	
