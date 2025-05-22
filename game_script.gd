@@ -57,7 +57,7 @@ func create_card(num: int) -> Object:
 	new_card.set_effect(cards["cards"][num]["effect"])
 	new_card.set_points(cards["cards"][num]["points"])
 	new_card.set_color(Color(0, 0, 0))
-	new_card.set_font_size(50)
+	new_card.set_font_size(125)
 	return new_card
 
 func create_random_card() -> Object:
@@ -67,7 +67,7 @@ func create_random_card() -> Object:
 	new_card.set_effect(cards["cards"][num]["effect"])
 	new_card.set_points(cards["cards"][num]["points"])
 	new_card.set_color(Color(0, 0, 0))
-	new_card.set_font_size(50)
+	new_card.set_font_size(125)
 	return new_card
 
 func play():

@@ -26,17 +26,16 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -55.294
-offset_top = -76.4712
-offset_right = 450.706
-offset_bottom = 666.529
+offset_left = -56.4706
+offset_top = -75.2941
+offset_right = 469.529
+offset_bottom = 687.706
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.2, 0.2)
 theme_override_styles/panel = SubResource("StyleBoxFlat_kikvd")
 
 [node name="Body" type="AspectRatioContainer" parent="PanelContainer"]
-visible = false
 z_index = 2
 layout_mode = 2
 
@@ -53,44 +52,39 @@ texture = ExtResource("2_q5obu")
 
 [node name="NameLabel" type="RichTextLabel" parent="."]
 z_index = 1
-offset_left = -40.0
-offset_top = -69.4118
-offset_right = 761.0
-offset_bottom = 142.588
+offset_left = -47.0
+offset_top = -75.0
+offset_right = 1176.0
+offset_bottom = 199.0
 scale = Vector2(0.1, 0.1)
 mouse_filter = 2
 theme_override_font_sizes/normal_font_size = 50
 text = "fhftgdhfghdfghdfghfghfg"
-fit_content = true
-scroll_active = false
 
 [node name="PointsLabel" type="RichTextLabel" parent="."]
 z_index = 1
-offset_left = -40.0
-offset_top = -48.2353
-offset_right = 478.0
-offset_bottom = 327.765
+offset_left = -47.0
+offset_top = -47.0
+offset_right = 1271.0
+offset_bottom = 329.0
 scale = Vector2(0.1, 0.1)
 mouse_filter = 2
 theme_override_font_sizes/normal_font_size = 100
 text = "8"
-scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="EffectLabel" type="RichTextLabel" parent="."]
 z_index = 1
-offset_left = -40.0
-offset_right = 760.0
-offset_bottom = 552.0
+offset_left = -47.0588
+offset_right = 1458.94
+offset_bottom = 754.0
 scale = Vector2(0.1, 0.0983267)
 mouse_filter = 2
 theme_override_font_sizes/normal_font_size = 50
 text = "ksbfiuysdgyfuiwegfisguigfiodoshoidhfoasdhfolsdnfkasdlbf
-dsfasdgfsdgdfgfdsgfgsdfgsdfgdfgsdfgsdsdgdsfgksbfiuysdgyfuiwegfisguigfiodoshoidhfoasdhfolsdnfkasdlbf
-dsfasdgfsdgdfgfdsgfgsdfgsdfgdfgsdfgsdsdgdsfg"
-fit_content = true
-scroll_active = false
+dsfasdgfsdgdfgfdfghsgfgsdfgsdfgdfgsdfgsdsdgdsfgksbfiuysdgyfuiwegfisguigfiodoshoidhfoasdhfolsdnfkasdlbf
+dsfasdgfsdgdfgfdsgfgsdfgsdfgdfgsdfgsdsdgdsfgksbfiuysdgyfuiwegfisguigfiodoshoidhfoasdhfolsdnfkasdl"
 
 [connection signal="mouse_entered" from="PanelContainer" to="." method="_on_panel_container_mouse_entered"]
 [connection signal="mouse_exited" from="PanelContainer" to="." method="_on_panel_container_mouse_exited"]

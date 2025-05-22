@@ -7,7 +7,7 @@ var _color: Color
 var font_color: Color
 var font: Variant
 var font_size: int
-var text_time: int = 1
+var text_time: float = 0.2
 var loaded: bool
 var points: int
 var text_scale = 0.1
@@ -16,9 +16,8 @@ func _ready():
 	$NameLabel.set_scale(Vector2(text_scale, text_scale))
 	$EffectLabel.set_scale(Vector2(text_scale, text_scale))
 	$PointsLabel.set_scale(Vector2(text_scale, text_scale))
-	loaded = false
+	loaded = true
 	switch_side("front")
-	load_text(true)
 
 func switch_side(side: String):
 	front = !front
@@ -113,7 +112,7 @@ func load_text(gradually: bool):
 	$PointsLabel.append_text(str(points))
 	loaded = true
 
-func extend_margin(length: int, extra: int, duration: int) -> void:
+func extend_margin(length: int, expansion: int, text_position: int, duration: int) -> void:
 	var tween = get_tree().create_tween()
 	tween.set_speed_scale(7)
 	var stylebox := $PanelContainer.get_theme_stylebox("panel") as StyleBoxFlat
@@ -127,21 +126,24 @@ func extend_margin(length: int, extra: int, duration: int) -> void:
 		
 	tween.tween_property(stylebox, "expand_margin_left", length, duration)
 	tween.set_parallel()
-	tween.tween_property(stylebox, "expand_margin_right", extra, duration)
-	tween.tween_property(stylebox, "expand_margin_bottom", extra, duration)
-	tween.tween_property(stylebox, "expand_margin_top", extra, duration)
-	tween.tween_property($NameLabel, "position.x", text_first_position.x - 200 - length, duration)
+	tween.tween_property(stylebox, "expand_margin_right", expansion, duration)
+	tween.tween_property(stylebox, "expand_margin_bottom", expansion, duration)
+	tween.tween_property(stylebox, "expand_margin_top", expansion, duration)
+	tween.tween_property($NameLabel, "position:x", text_position, duration)
+	tween.tween_property($PointsLabel, "position:x", text_position, duration)
+	tween.tween_property($EffectLabel, "position:x", text_position, duration)
 
 @onready var z_default: int = z_index
 @onready var unextended_length: int = $PanelContainer.size.x
 @onready var first_position: Vector2 = $PanelContainer.position
 @onready var text_first_position: Vector2 = $NameLabel.position
 func _on_panel_container_mouse_entered():
-	extend_margin(unextended_length, 50, 1)
+	extend_margin(unextended_length * 1.5, 50, text_first_position.x - unextended_length * 1.5 * $PanelContainer.scale.x, 1)
 	load_text(true)
 	
 func _on_panel_container_mouse_exited():
-	extend_margin(10, 10, 1)
+	re_push()
+	extend_margin(10, 10, text_first_position.x, 1)
 	await get_tree().create_timer(200).timeout
 	z_index = z_default
 	
