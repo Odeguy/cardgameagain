@@ -10,8 +10,12 @@ var font_size: int
 var text_time: int = 1
 var loaded: bool
 var points: int
+var text_scale = 0.1
 
 func _ready():
+	$NameLabel.set_scale(Vector2(text_scale, text_scale))
+	$EffectLabel.set_scale(Vector2(text_scale, text_scale))
+	$PointsLabel.set_scale(Vector2(text_scale, text_scale))
 	loaded = false
 	switch_side("front")
 	load_text(true)
@@ -44,20 +48,20 @@ func set_effect(effect_entered: String):
 	re_push()
 
 func re_push():
-	$PanelContainer/NameLabel.clear()
-	if(font_color != null): $PanelContainer/NameLabel.push_color(font_color)
-	if(font_size != null): $PanelContainer/NameLabel.push_font_size(font_size)
-	if(font != null): $PanelContainer/NameLabel.push_font(font)
+	$NameLabel.clear()
+	if(font_color != null): $NameLabel.push_color(font_color)
+	if(font_size != null): $NameLabel.push_font_size(font_size)
+	if(font != null): $NameLabel.push_font(font)
 	
-	$PanelContainer/EffectLabel.clear()
-	if(font_color != null): $PanelContainer/EffectLabel.push_color(font_color)
-	if(font_size != null): $PanelContainer/EffectLabel.push_font_size(font_size)
-	if(font != null): $PanelContainer/EffectLabel.push_font(font)
+	$EffectLabel.clear()
+	if(font_color != null): $EffectLabel.push_color(font_color)
+	if(font_size != null): $EffectLabel.push_font_size(font_size)
+	if(font != null): $EffectLabel.push_font(font)
 	
-	$PanelContainer/PointsLabel.clear()
-	if(font_color != null): $PanelContainer/PointsLabel.push_color(font_color)
-	if(font_size != null): $PanelContainer/PointsLabel.push_font_size(font_size * 3)
-	if(font != null): $PanelContainer/PointsLabel.push_font(font)
+	$PointsLabel.clear()
+	if(font_color != null): $PointsLabel.push_color(font_color)
+	if(font_size != null): $PointsLabel.push_font_size(font_size * 3)
+	if(font != null): $PointsLabel.push_font(font)
 	
 func has_point(point: Vector2) -> bool:
 	return $PanelContainer.panel.get_draw_rect().has_point(to_local(point))
@@ -88,9 +92,9 @@ func get_points() -> int:
 	return points
 
 func load_text(gradually: bool):
-	$PanelContainer/NameLabel.clear()
-	$PanelContainer/EffectLabel.clear()
-	$PanelContainer/PointsLabel.clear()
+	$NameLabel.clear()
+	$EffectLabel.clear()
+	$PointsLabel.clear()
 	re_push()
 	var effect_with_int = effect #effect but [points value] is replaced with the actual number
 	while effect_with_int.find("[points value]") != -1:
@@ -98,18 +102,18 @@ func load_text(gradually: bool):
 	if gradually:
 		loaded = false
 		for char in card_name:
-			$PanelContainer/NameLabel.append_text(char)
+			$NameLabel.append_text(char)
 			await get_tree().create_timer(text_time / card_name.length()).timeout
 		for char in effect_with_int:
-			$PanelContainer/EffectLabel.append_text(char)
+			$EffectLabel.append_text(char)
 			await get_tree().create_timer(text_time / effect.length()).timeout
 	else:
-		$PanelContainer/NameLabel.append_text(card_name)
-		$PanelContainer/EffectLabel.append_text(effect_with_int)
-	$PanelContainer/PointsLabel.append_text(str(points))
+		$NameLabel.append_text(card_name)
+		$EffectLabel.append_text(effect_with_int)
+	$PointsLabel.append_text(str(points))
 	loaded = true
 
-func extend_margin(length: int, duration: int) -> void:
+func extend_margin(length: int, extra: int, duration: int) -> void:
 	var tween = get_tree().create_tween()
 	tween.set_speed_scale(7)
 	var stylebox := $PanelContainer.get_theme_stylebox("panel") as StyleBoxFlat
@@ -123,19 +127,21 @@ func extend_margin(length: int, duration: int) -> void:
 		
 	tween.tween_property(stylebox, "expand_margin_left", length, duration)
 	tween.set_parallel()
-	tween.tween_property(stylebox, "expand_margin_right", 50, duration)
-	tween.tween_property(stylebox, "expand_margin_bottom", 50, duration)
-	tween.tween_property(stylebox, "expand_margin_top", 50, duration)
+	tween.tween_property(stylebox, "expand_margin_right", extra, duration)
+	tween.tween_property(stylebox, "expand_margin_bottom", extra, duration)
+	tween.tween_property(stylebox, "expand_margin_top", extra, duration)
+	tween.tween_property($NameLabel, "position.x", text_first_position.x - 200 - length, duration)
 
 @onready var z_default: int = z_index
 @onready var unextended_length: int = $PanelContainer.size.x
-@onready var first_position: Vector2 = $PanelContainer.position	
+@onready var first_position: Vector2 = $PanelContainer.position
+@onready var text_first_position: Vector2 = $NameLabel.position
 func _on_panel_container_mouse_entered():
-	extend_margin(unextended_length, 1)
-	#load_text(true)
+	extend_margin(unextended_length, 50, 1)
+	load_text(true)
 	
 func _on_panel_container_mouse_exited():
-	extend_margin(10, 1)
+	extend_margin(10, 10, 1)
 	await get_tree().create_timer(200).timeout
 	z_index = z_default
 	
