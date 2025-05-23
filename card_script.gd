@@ -7,10 +7,11 @@ var _color: Color
 var font_color: Color
 var font: Variant
 var font_size: int
-var text_time: float = 0.2
+var text_time: float = 0.1
 var loaded: bool
 var points: int
 var text_scale = 0.1
+var mouse_entered = false
 
 func _ready():
 	$NameLabel.set_scale(Vector2(text_scale, text_scale))
@@ -59,11 +60,11 @@ func re_push():
 	
 	$PointsLabel.clear()
 	if(font_color != null): $PointsLabel.push_color(font_color)
-	if(font_size != null): $PointsLabel.push_font_size(font_size * 3)
+	if(font_size != null): $PointsLabel.push_font_size(font_size * 2)
 	if(font != null): $PointsLabel.push_font(font)
 	
-func has_point(point: Vector2) -> bool:
-	return $PanelContainer.panel.get_draw_rect().has_point(to_local(point))
+func hovered_over() -> bool:
+	return mouse_entered
 	
 
 func get_size() -> Vector2:
@@ -101,9 +102,11 @@ func load_text(gradually: bool):
 	if gradually:
 		loaded = false
 		for char in card_name:
+			if loaded: break
 			$NameLabel.append_text(char)
 			await get_tree().create_timer(text_time / card_name.length()).timeout
 		for char in effect_with_int:
+			if loaded: break
 			$EffectLabel.append_text(char)
 			await get_tree().create_timer(text_time / effect.length()).timeout
 	else:
@@ -138,11 +141,14 @@ func extend_margin(length: int, expansion: int, text_position: int, duration: in
 @onready var first_position: Vector2 = $PanelContainer.position
 @onready var text_first_position: Vector2 = $NameLabel.position
 func _on_panel_container_mouse_entered():
+	mouse_entered = true
 	extend_margin(unextended_length * 1.5, 50, text_first_position.x - unextended_length * 1.5 * $PanelContainer.scale.x, 1)
 	load_text(true)
 	
 func _on_panel_container_mouse_exited():
-	re_push()
+	mouse_entered = false
+	loaded = true
+	await re_push()
 	extend_margin(10, 10, text_first_position.x, 1)
 	await get_tree().create_timer(200).timeout
 	z_index = z_default

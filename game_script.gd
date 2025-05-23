@@ -79,6 +79,8 @@ func play():
 			if await make_play_or_deploy(): break
 			var points = player.get_card_points(chosen_card)
 			var card = player.play_card(chosen_card)
+			show_card_queue()
+			player.show_hand()
 			await add_to_card_queue(card, points, player, opponent)
 		else:
 			if turn_count > 2:
@@ -92,6 +94,8 @@ func play():
 			var random_card = random_opponent_card()
 			var points = opponent.get_card_points(random_card)
 			var card = await opponent.play_card(random_card)
+			show_card_queue()
+			opponent.show_hand()
 			await add_to_card_queue(card, points, opponent, player)
 			await get_tree().create_timer(0.5).timeout
 			if i == 2: await deploy_queue() #final iteration
@@ -153,8 +157,12 @@ func show_card_queue():
 	var increments = 1
 	for c in card_queue:
 		var card = c[0]
-		card.position.x = start + increment * increments + card.get_size().x / 2
-		card.position.y = screen_size.y * 1 / 2
+		var pos_x = start + increment * increments + card.get_size().x / 2
+		var pos_y = screen_size.y * 1 / 2
+		var tween = get_tree().create_tween()
+		tween.set_speed_scale(7)
+		tween.tween_property(card, "position:x", pos_x, 1)
+		tween.tween_property(card, "position:y", pos_y, 1)
 		card.z_index = increments * 7
 		increments += 1
 		card.switch_side("front")
@@ -351,11 +359,11 @@ func new_turn() -> void: #everything that should happen at the beginning of a tu
 		
 func _input(event: InputEvent) -> void:
 	for card in player.hand:
-		if(event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and card.loaded and card.has_point(get_global_mouse_position())):
+		if(event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and card.loaded and card.hovered_over()):
 			chosen_card = card
 	for card in opponent.hand:
-		if(event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and card.loaded and card.has_point(get_global_mouse_position())):
+		if(event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and card.loaded and card.hovered_over()):
 			chosen_opponent_card = card
 	for card in other_hand:
-		if(event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and card.loaded and card.has_point(get_global_mouse_position())):
+		if(event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and card.loaded and card.hovered_over()):
 			chosen_other_card = card

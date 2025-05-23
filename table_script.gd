@@ -66,9 +66,9 @@ func refresh_points():
 	$Area/Points.append_text(str(points))
 		
 func play_card(card: Object) -> Object:
+	card._on_panel_container_mouse_exited()
 	remove_child(card)
 	hand.remove_at(hand.find(card))
-	show_hand()
 	refresh_points()
 	return card
 	
